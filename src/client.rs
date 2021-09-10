@@ -71,19 +71,19 @@ impl Client {
         }
     }
 
-    pub fn post<P, D>(&self, path: P, document: D) -> Result
+    pub fn post<'d, P, D>(&self, path: P, document: D) -> Result
     where
         P: Display,
-        D: Into<Document>,
+        D: Into<&'d Document>,
     {
         let url = Url::parse(&format!("{}{}.json", self.0, path))
             .map_err(|error| Error::URL(error))?;
 
-        let document: Document = document.into();
+        let document: &Document = document.into();
 
         let mut response = ReqClient::new()
             .post(url)
-            .json(&document)
+            .json(document)
             .header(ACCEPT, MIME)
             .header(CONTENT_TYPE, MIME)
             .send()
