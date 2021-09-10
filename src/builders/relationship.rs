@@ -53,15 +53,15 @@ impl RelationshipBuilder {
         }
     }
 
-    pub fn data(self, data: DataBuilder) -> Self {
+    pub fn data<D: Into<DataBuilder>>(self, data: D) -> Self {
         Self {
-            data: Some(data),
+            data: Some(data.into()),
             ..self
         }
     }
 
     pub fn data_single(self, resource: ResourceBuilder) -> Self {
-        self.data(DataBuilder::Single(resource))
+        self.data(resource)
     }
 }
 
@@ -132,6 +132,48 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 })),
+            },
+        );
+    }
+
+    #[test]
+    fn with_data_from_resource() {
+        assert_eq!(
+            RelationshipBuilder::default()
+                .data(ResourceBuilder::new("qwerties"))
+                .unwrap(),
+            Relationship {
+                meta: None,
+                links: None,
+                data: Some(Data::Single(Resource {
+                    type_: "qwerties".into(),
+                    id: None,
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                })),
+            },
+        );
+    }
+
+    #[test]
+    fn with_data_from_resources() {
+        assert_eq!(
+            RelationshipBuilder::default()
+                .data(vec![ResourceBuilder::new("qwerties")])
+                .unwrap(),
+            Relationship {
+                meta: None,
+                links: None,
+                data: Some(Data::Multiple(vec![Resource {
+                    type_: "qwerties".into(),
+                    id: None,
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                }])),
             },
         );
     }

@@ -23,6 +23,18 @@ impl Builder for DataBuilder {
     }
 }
 
+impl From<ResourceBuilder> for DataBuilder {
+    fn from(resource: ResourceBuilder) -> Self {
+        Self::Single(resource)
+    }
+}
+
+impl From<Vec<ResourceBuilder>> for DataBuilder {
+    fn from(resources: Vec<ResourceBuilder>) -> Self {
+        Self::Multiple(resources)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
