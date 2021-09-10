@@ -6,7 +6,7 @@ use reqwest::{
     header::{ACCEPT, CONTENT_TYPE},
     Client as ReqClient, Error as ReqError, Url, UrlError,
 };
-use serde::Deserialize;
+use serde::Serialize;
 use serde_json::Error as JsonError;
 
 const MIME: &str = "application/vnd.api+json";
@@ -16,7 +16,7 @@ pub struct Client(String);
 
 pub type Result = std::result::Result<Response, Error>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Response {
     document: Document,
 }
