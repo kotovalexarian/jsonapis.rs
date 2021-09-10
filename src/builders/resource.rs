@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct ResourceBuilder {
     type_: String,
     id: Option<String>,

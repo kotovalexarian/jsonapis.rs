@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct RelationshipsBuilder(HashMap<String, RelationshipBuilder>);
 
 impl Default for RelationshipsBuilder {

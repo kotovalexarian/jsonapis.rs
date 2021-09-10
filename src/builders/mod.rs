@@ -24,7 +24,7 @@ use std::collections::HashMap;
 
 use serde_json::Value;
 
-pub trait Builder: Sized {
+pub trait Builder: Clone + Sized {
     type Entity: Entity;
 
     fn finish(self) -> Result<Self::Entity, ()>;

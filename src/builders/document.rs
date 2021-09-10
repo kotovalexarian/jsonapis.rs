@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct DocumentBuilder {
     jsonapi: Option<JsonApiBuilder>,
     meta: Option<MetaOrAttrsBuilder>,

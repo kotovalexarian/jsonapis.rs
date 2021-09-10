@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct LinkBuilder {
     href: String,
     meta: Option<MetaOrAttrsBuilder>,

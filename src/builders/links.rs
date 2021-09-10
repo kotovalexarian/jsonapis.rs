@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct LinksBuilder {
     pub other: HashMap<String, LinkBuilder>,
     pub self_: Option<LinkBuilder>,

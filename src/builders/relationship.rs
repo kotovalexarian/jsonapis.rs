@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct RelationshipBuilder {
     meta: Option<MetaOrAttrsBuilder>,
     links: Option<LinksBuilder>,

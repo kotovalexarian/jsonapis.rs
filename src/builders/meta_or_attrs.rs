@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Clone)]
 pub struct MetaOrAttrsBuilder(MetaOrAttrs);
 
 impl Default for MetaOrAttrsBuilder {
