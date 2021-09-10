@@ -21,10 +21,7 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn new_with_id<I>(type_: &str, id: I) -> Self
-    where
-        I: ToString,
-    {
+    pub fn new_with_id<I: ToString>(type_: &str, id: I) -> Self {
         Self {
             type_: type_.into(),
             id: Some(id.to_string()),
@@ -99,10 +96,7 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn attr<V>(self, name: &str, attribute: V) -> Self
-    where
-        V: Into<Value>,
-    {
+    pub fn attr<V: Into<Value>>(self, name: &str, attribute: V) -> Self {
         let attributes = self
             .attributes
             .unwrap_or(MetaOrAttrsBuilder::default())

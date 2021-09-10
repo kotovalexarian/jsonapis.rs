@@ -23,10 +23,7 @@ impl Builder for MetaOrAttrsBuilder {
 }
 
 impl MetaOrAttrsBuilder {
-    pub fn item<V>(self, name: &str, value: V) -> Self
-    where
-        V: Into<Value>,
-    {
+    pub fn item<V: Into<Value>>(self, name: &str, value: V) -> Self {
         let mut meta_or_attrs = self.0;
         meta_or_attrs.insert(name.into(), value.into());
         Self(meta_or_attrs)
