@@ -29,6 +29,12 @@ pub enum Error {
     JSON(JsonError),
 }
 
+impl Response {
+    pub fn document(&self) -> &Document {
+        &self.document
+    }
+}
+
 impl Client {
     pub fn new<U: Into<String>>(url: U) -> Self {
         Self(url.into())
