@@ -1,6 +1,6 @@
 use super::*;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MetaOrAttrsBuilder(MetaOrAttrs);
 
 impl Default for MetaOrAttrsBuilder {

@@ -21,10 +21,11 @@ pub use resource::ResourceBuilder;
 use super::entities::*;
 
 use std::collections::HashMap;
+use std::fmt::Debug;
 
 use serde_json::Value;
 
-pub trait Builder: Clone + Sized {
+pub trait Builder: Clone + Debug + Eq + PartialEq + Sized {
     type Entity: Entity;
 
     fn finish(self) -> Result<Self::Entity, ()>;

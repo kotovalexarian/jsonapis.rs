@@ -1,6 +1,6 @@
 use super::*;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DocumentBuilder {
     jsonapi: Option<JsonApiBuilder>,
     meta: Option<MetaOrAttrsBuilder>,
