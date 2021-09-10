@@ -4,8 +4,13 @@ version = "0.0.0"
 authors = ["Alex Kotov <kotovalexarian@gmail.com>"]
 edition = "2018"
 description = "JSON:API library for Rust"
+readme = true
 homepage = "https://github.com/kotovalexarian/jsonapis.rs"
 repository = "https://github.com/kotovalexarian/jsonapis.rs.git"
+license = "MIT"
+keywords = ["api", "deserialization", "json", "serialization", "jsonapi"]
+categories = ["web-programming"]
+publish = true
 
 [dependencies]
 regex = "1.5.4"
