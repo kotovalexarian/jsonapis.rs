@@ -115,8 +115,8 @@ mod tests {
                 .unwrap(),
             Document {
                 jsonapi: Some(JsonApi {
-                    meta: None,
                     version: Some(Version::new(456)),
+                    meta: None,
                 }),
                 meta: Some(meta()),
                 links: None,
@@ -140,8 +140,8 @@ mod tests {
                 .unwrap(),
             Document {
                 jsonapi: Some(JsonApi {
-                    meta: None,
                     version: Some(Version::new(456)),
+                    meta: None,
                 }),
                 meta: None,
                 links: None,
