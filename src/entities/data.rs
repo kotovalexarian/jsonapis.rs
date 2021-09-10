@@ -56,3 +56,145 @@ impl<'de> Deserialize<'de> for Data {
         deserializer.deserialize_any(MyVisitor)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn clone() {
+        assert_eq!(Data::Multiple(vec![]).clone(), Data::Multiple(vec![]));
+
+        assert_eq!(
+            Data::Single(Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            })
+            .clone(),
+            Data::Single(Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }),
+        );
+
+        assert_eq!(
+            Data::Multiple(vec![Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }])
+            .clone(),
+            Data::Multiple(vec![Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }]),
+        );
+    }
+
+    #[test]
+    fn debug() {
+        assert_eq!(format!("{:?}", Data::Multiple(vec![])), "Multiple([])",);
+
+        assert_eq!(
+            format!(
+                "{:?}",
+                Data::Single(Resource {
+                    type_: "qwerties".into(),
+                    id: None,
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                })
+            ),
+            "Single(Resource { \
+                type_: \"qwerties\", \
+                id: None, \
+                meta: None, \
+                links: None, \
+                attributes: None, \
+                relationships: None \
+            })",
+        );
+
+        assert_eq!(
+            format!(
+                "{:?}",
+                Data::Multiple(vec![Resource {
+                    type_: "qwerties".into(),
+                    id: None,
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                }]),
+            ),
+            "Multiple([Resource { \
+                type_: \"qwerties\", \
+                id: None, \
+                meta: None, \
+                links: None, \
+                attributes: None, \
+                relationships: None \
+            }])",
+        );
+    }
+
+    #[test]
+    fn equality() {
+        assert_eq!(Data::Multiple(vec![]), Data::Multiple(vec![]));
+
+        assert_eq!(
+            Data::Single(Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }),
+            Data::Single(Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }),
+        );
+
+        assert_eq!(
+            Data::Multiple(vec![Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }]),
+            Data::Multiple(vec![Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }]),
+        );
+    }
+}

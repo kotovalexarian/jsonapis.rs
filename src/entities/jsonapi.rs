@@ -4,6 +4,79 @@ impl Entity for JsonApi {}
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct JsonApi {
-    pub meta: Option<MetaOrAttrs>,
     pub version: Option<Version>,
+    pub meta: Option<MetaOrAttrs>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn clone() {
+        assert_eq!(
+            JsonApi {
+                version: Some(Version::default()),
+                meta: None
+            }
+            .clone(),
+            JsonApi {
+                version: Some(Version::default()),
+                meta: None
+            }
+        );
+    }
+
+    #[test]
+    fn debug() {
+        assert_eq!(
+            format!(
+                "{:?}",
+                JsonApi {
+                    version: Some(Version::default()),
+                    meta: None,
+                },
+            ),
+            "JsonApi { \
+                version: Some(Version(\"1.0\")), \
+                meta: None \
+            }",
+        );
+    }
+
+    #[test]
+    fn equality() {
+        assert_eq!(
+            JsonApi {
+                version: None,
+                meta: None,
+            },
+            JsonApi {
+                version: None,
+                meta: None,
+            },
+        );
+
+        assert_eq!(
+            JsonApi {
+                version: Some(Version::new(123)),
+                meta: None,
+            },
+            JsonApi {
+                version: Some(Version::new(123)),
+                meta: None,
+            },
+        );
+
+        assert_ne!(
+            JsonApi {
+                version: Some(Version::new(321)),
+                meta: None,
+            },
+            JsonApi {
+                version: Some(Version::new(123)),
+                meta: None,
+            },
+        );
+    }
 }
