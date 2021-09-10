@@ -108,6 +108,18 @@ impl ResourceBuilder {
         }
     }
 
+    pub fn link(self, name: &str, link: LinkBuilder) -> Self {
+        let links = self
+            .links
+            .unwrap_or(LinksBuilder::default())
+            .link(name, link);
+
+        Self {
+            links: Some(links),
+            ..self
+        }
+    }
+
     pub fn attr<V: Into<Value>>(self, name: &str, attribute: V) -> Self {
         let attributes = self
             .attributes
@@ -245,16 +257,14 @@ mod tests {
                 .id("123")
                 .meta1("foo", 123)
                 .meta1("bar", "qwe")
-                .links(
-                    LinksBuilder::default()
-                        .self_(LinkBuilder::new("http://self.com"))
-                        .next(
-                            LinkBuilder::new("http://next.com").meta(
-                                MetaOrAttrsBuilder::default()
-                                    .item("foo", 123)
-                                    .item("bar", "qwe"),
-                            ),
-                        ),
+                .link("self", LinkBuilder::new("http://self.com"))
+                .link(
+                    "next",
+                    LinkBuilder::new("http://next.com").meta(
+                        MetaOrAttrsBuilder::default()
+                            .item("foo", 123)
+                            .item("bar", "qwe"),
+                    ),
                 )
                 .attr("foo", 123)
                 .attr("bar", "qwe")
