@@ -96,6 +96,18 @@ impl ResourceBuilder {
         }
     }
 
+    pub fn meta1<V: Into<Value>>(self, name: &str, meta1: V) -> Self {
+        let meta = self
+            .meta
+            .unwrap_or(MetaOrAttrsBuilder::default())
+            .item(name, meta1);
+
+        Self {
+            meta: Some(meta),
+            ..self
+        }
+    }
+
     pub fn attr<V: Into<Value>>(self, name: &str, attribute: V) -> Self {
         let attributes = self
             .attributes
@@ -231,11 +243,8 @@ mod tests {
         assert_eq!(
             ResourceBuilder::new("qwerties")
                 .id("123")
-                .meta(
-                    MetaOrAttrsBuilder::default()
-                        .item("foo", 123)
-                        .item("bar", "qwe"),
-                )
+                .meta1("foo", 123)
+                .meta1("bar", "qwe")
                 .links(
                     LinksBuilder::default()
                         .self_(LinkBuilder::new("http://self.com"))
