@@ -3,5 +3,11 @@ name = "jsonapis"
 version = "0.0.0"
 authors = ["Alex Kotov <kotovalexarian@gmail.com>"]
 edition = "2018"
+description = "JSON:API library for Rust"
+homepage = "https://github.com/kotovalexarian/jsonapis.rs"
+repository = "https://github.com/kotovalexarian/jsonapis.rs.git"
 
 [dependencies]
+regex = "1.5.4"
+serde = { version = "1.0.129", features = ["derive"] }
+serde_json = "1.0.66"
