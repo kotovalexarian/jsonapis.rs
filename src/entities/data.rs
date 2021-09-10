@@ -62,51 +62,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn clone() {
-        assert_eq!(Data::Multiple(vec![]).clone(), Data::Multiple(vec![]));
-
-        assert_eq!(
-            Data::Single(Resource {
-                type_: "qwerties".into(),
-                id: None,
-                meta: None,
-                links: None,
-                attributes: None,
-                relationships: None,
-            })
-            .clone(),
-            Data::Single(Resource {
-                type_: "qwerties".into(),
-                id: None,
-                meta: None,
-                links: None,
-                attributes: None,
-                relationships: None,
-            }),
-        );
-
-        assert_eq!(
-            Data::Multiple(vec![Resource {
-                type_: "qwerties".into(),
-                id: None,
-                meta: None,
-                links: None,
-                attributes: None,
-                relationships: None,
-            }])
-            .clone(),
-            Data::Multiple(vec![Resource {
-                type_: "qwerties".into(),
-                id: None,
-                meta: None,
-                links: None,
-                attributes: None,
-                relationships: None,
-            }]),
-        );
-    }
-
-    #[test]
     fn debug() {
         assert_eq!(format!("{:?}", Data::Multiple(vec![])), "Multiple([])",);
 

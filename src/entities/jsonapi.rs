@@ -13,21 +13,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn clone() {
-        assert_eq!(
-            JsonApi {
-                version: Some(Version::default()),
-                meta: None
-            }
-            .clone(),
-            JsonApi {
-                version: Some(Version::default()),
-                meta: None
-            }
-        );
-    }
-
-    #[test]
     fn debug() {
         assert_eq!(
             format!(

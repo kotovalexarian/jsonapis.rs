@@ -15,25 +15,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn clone() {
-        assert_eq!(
-            Document {
-                jsonapi: None,
-                meta: None,
-                links: None,
-                data: None,
-            }
-            .clone(),
-            Document {
-                jsonapi: None,
-                meta: None,
-                links: None,
-                data: None,
-            },
-        );
-    }
-
-    #[test]
     fn debug() {
         assert_eq!(
             format!(
