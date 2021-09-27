@@ -182,6 +182,25 @@ mod tests {
         meta
     }
 
+    fn links() -> Links {
+        Links {
+            other: {
+                let mut other = HashMap::new();
+                other.insert(
+                    "qwe".into(),
+                    Link::String("http://qwe.com".into()),
+                );
+                other
+            },
+            self_: Some(Link::String("http://self.com".into())),
+            related: None,
+            first: None,
+            last: None,
+            prev: None,
+            next: None,
+        }
+    }
+
     #[test]
     fn empty() {
         assert_eq!(
@@ -357,28 +376,13 @@ mod tests {
         assert_eq!(
             ResourceBuilder::new("qwerties")
                 .link("self", "http://self.com")
-                .link("foo", "http://foo.com")
+                .link("qwe", "http://qwe.com")
                 .unwrap(),
             Resource {
                 type_: "qwerties".into(),
                 id: None,
                 meta: None,
-                links: Some(Links {
-                    other: {
-                        let mut other = HashMap::new();
-                        other.insert(
-                            "foo".into(),
-                            Link::String("http://foo.com".into()),
-                        );
-                        other
-                    },
-                    self_: Some(Link::String("http://self.com".into())),
-                    related: None,
-                    first: None,
-                    last: None,
-                    prev: None,
-                    next: None,
-                }),
+                links: Some(links()),
                 attributes: None,
                 relationships: None,
             },

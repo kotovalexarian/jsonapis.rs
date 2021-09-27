@@ -119,6 +119,25 @@ mod tests {
         meta
     }
 
+    fn links() -> Links {
+        Links {
+            other: {
+                let mut other = HashMap::new();
+                other.insert(
+                    "qwe".into(),
+                    Link::String("http://qwe.com".into()),
+                );
+                other
+            },
+            self_: Some(Link::String("http://self.com".into())),
+            related: None,
+            first: None,
+            last: None,
+            prev: None,
+            next: None,
+        }
+    }
+
     #[test]
     fn empty() {
         assert_eq!(
@@ -289,26 +308,11 @@ mod tests {
         assert_eq!(
             RelationshipBuilder::default()
                 .link("self", "http://self.com")
-                .link("foo", "http://foo.com")
+                .link("qwe", "http://qwe.com")
                 .unwrap(),
             Relationship {
                 meta: None,
-                links: Some(Links {
-                    other: {
-                        let mut other = HashMap::new();
-                        other.insert(
-                            "foo".into(),
-                            Link::String("http://foo.com".into()),
-                        );
-                        other
-                    },
-                    self_: Some(Link::String("http://self.com".into())),
-                    related: None,
-                    first: None,
-                    last: None,
-                    prev: None,
-                    next: None,
-                }),
+                links: Some(links()),
                 data: None,
             },
         );
@@ -318,22 +322,7 @@ mod tests {
     fn implicit_from_entity() {
         let relationship = Relationship {
             meta: Some(meta()),
-            links: Some(Links {
-                other: {
-                    let mut other = HashMap::new();
-                    other.insert(
-                        "foo".into(),
-                        Link::String("http://foo.com".into()),
-                    );
-                    other
-                },
-                self_: Some(Link::String("http://self.com".into())),
-                related: Some(Link::String("http://related.com".into())),
-                first: Some(Link::String("http://first.com".into())),
-                last: Some(Link::String("http://last.com".into())),
-                prev: Some(Link::String("http://prev.com".into())),
-                next: Some(Link::String("http://next.com".into())),
-            }),
+            links: Some(links()),
             data: Some(Data::Single(Resource {
                 type_: "qwerties".into(),
                 id: Some("123".into()),
