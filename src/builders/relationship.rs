@@ -63,6 +63,30 @@ impl RelationshipBuilder {
     pub fn data_single(self, resource: ResourceBuilder) -> Self {
         self.data(resource)
     }
+
+    pub fn meta1<V: Into<Value>>(self, name: &str, meta1: V) -> Self {
+        let meta = self
+            .meta
+            .unwrap_or(MetaOrAttrsBuilder::default())
+            .item(name, meta1);
+
+        Self {
+            meta: Some(meta),
+            ..self
+        }
+    }
+
+    pub fn link<L: Into<LinkBuilder>>(self, name: &str, link: L) -> Self {
+        let links = self
+            .links
+            .unwrap_or(LinksBuilder::default())
+            .link(name, link);
+
+        Self {
+            links: Some(links),
+            ..self
+        }
+    }
 }
 
 #[cfg(test)]
@@ -107,6 +131,49 @@ mod tests {
                                     .item("bar", "qwe"),
                             ),
                         ),
+                )
+                .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
+                .unwrap(),
+            Relationship {
+                meta: Some(meta()),
+                links: Some(Links {
+                    other: HashMap::new(),
+                    self_: Some(Link::String("http://self.com".into())),
+                    related: None,
+                    first: None,
+                    last: None,
+                    prev: Some(Link::Object(LinkObject {
+                        href: "http://prev.com".into(),
+                        meta: Some(meta()),
+                    })),
+                    next: None,
+                }),
+                data: Some(Data::Single(Resource {
+                    type_: "qwerties".into(),
+                    id: None,
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                })),
+            },
+        );
+    }
+
+    #[test]
+    fn full_delegators() {
+        assert_eq!(
+            RelationshipBuilder::default()
+                .meta1("foo", 123)
+                .meta1("bar", "qwe")
+                .link("self", LinkBuilder::new("http://self.com"))
+                .link(
+                    "prev",
+                    LinkBuilder::new("http://prev.com").meta(
+                        MetaOrAttrsBuilder::default()
+                            .item("foo", 123)
+                            .item("bar", "qwe"),
+                    )
                 )
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
                 .unwrap(),
