@@ -361,14 +361,16 @@ mod tests {
     #[test]
     fn with_data_implicit_from_entity() {
         assert_eq!(
-            RelationshipBuilder::default().data(Data::Single(Resource {
-                type_: "qwerties".into(),
-                id: Some("123".into()),
-                meta: None,
-                links: None,
-                attributes: None,
-                relationships: None,
-            })).unwrap(),
+            RelationshipBuilder::default()
+                .data(Data::Single(Resource {
+                    type_: "qwerties".into(),
+                    id: Some("123".into()),
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                }))
+                .unwrap(),
             Relationship {
                 meta: None,
                 links: None,
@@ -387,14 +389,16 @@ mod tests {
     #[test]
     fn with_data_single_implicit_from_entity() {
         assert_eq!(
-            RelationshipBuilder::default().data(Resource {
-                type_: "qwerties".into(),
-                id: Some("123".into()),
-                meta: None,
-                links: None,
-                attributes: None,
-                relationships: None,
-            }).unwrap(),
+            RelationshipBuilder::default()
+                .data(Resource {
+                    type_: "qwerties".into(),
+                    id: Some("123".into()),
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                })
+                .unwrap(),
             Relationship {
                 meta: None,
                 links: None,

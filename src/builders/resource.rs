@@ -108,14 +108,20 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn attributes<M: Into<MetaOrAttrsBuilder>>(self, attributes: M) -> Self {
+    pub fn attributes<M: Into<MetaOrAttrsBuilder>>(
+        self,
+        attributes: M,
+    ) -> Self {
         Self {
             attributes: Some(attributes.into()),
             ..self
         }
     }
 
-    pub fn relationships<R: Into<RelationshipsBuilder>>(self, relationships: R) -> Self {
+    pub fn relationships<R: Into<RelationshipsBuilder>>(
+        self,
+        relationships: R,
+    ) -> Self {
         Self {
             relationships: Some(relationships.into()),
             ..self
@@ -158,7 +164,11 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn rel<R: Into<RelationshipBuilder>>(self, name: &str, relationship: R) -> Self {
+    pub fn rel<R: Into<RelationshipBuilder>>(
+        self,
+        name: &str,
+        relationship: R,
+    ) -> Self {
         let relationships = self
             .relationships
             .unwrap_or(RelationshipsBuilder::default())
@@ -460,18 +470,20 @@ mod tests {
     #[test]
     fn with_relationships_implicit_from_entity() {
         assert_eq!(
-            ResourceBuilder::new("qwerties").relationships({
-                let mut relationships = HashMap::new();
-                relationships.insert(
-                    "foo".into(),
-                    Relationship {
-                        meta: Some(meta()),
-                        links: Some(links()),
-                        data: None,
-                    },
-                );
-                relationships
-            }).unwrap(),
+            ResourceBuilder::new("qwerties")
+                .relationships({
+                    let mut relationships = HashMap::new();
+                    relationships.insert(
+                        "foo".into(),
+                        Relationship {
+                            meta: Some(meta()),
+                            links: Some(links()),
+                            data: None,
+                        },
+                    );
+                    relationships
+                })
+                .unwrap(),
             Resource {
                 type_: "qwerties".into(),
                 id: None,
@@ -497,11 +509,16 @@ mod tests {
     #[test]
     fn with_rel_implicit_from_entity() {
         assert_eq!(
-            ResourceBuilder::new("qwerties").rel("foo", Relationship {
-                meta: Some(meta()),
-                links: Some(links()),
-                data: None,
-            }).unwrap(),
+            ResourceBuilder::new("qwerties")
+                .rel(
+                    "foo",
+                    Relationship {
+                        meta: Some(meta()),
+                        links: Some(links()),
+                        data: None,
+                    }
+                )
+                .unwrap(),
             Resource {
                 type_: "qwerties".into(),
                 id: None,

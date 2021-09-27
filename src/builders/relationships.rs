@@ -34,7 +34,11 @@ impl From<Relationships> for RelationshipsBuilder {
 }
 
 impl RelationshipsBuilder {
-    pub fn rel<R: Into<RelationshipBuilder>>(self, name: &str, relationship: R) -> Self {
+    pub fn rel<R: Into<RelationshipBuilder>>(
+        self,
+        name: &str,
+        relationship: R,
+    ) -> Self {
         let mut relationships = self.0;
         relationships.insert(name.into(), relationship.into());
         Self(relationships)
@@ -140,11 +144,16 @@ mod tests {
     #[test]
     fn with_rel_implicit_from_entity() {
         assert_eq!(
-            RelationshipsBuilder::default().rel("qwerty", Relationship {
-                meta: Some(meta()),
-                links: Some(links()),
-                data: None,
-            }).unwrap(),
+            RelationshipsBuilder::default()
+                .rel(
+                    "qwerty",
+                    Relationship {
+                        meta: Some(meta()),
+                        links: Some(links()),
+                        data: None,
+                    }
+                )
+                .unwrap(),
             {
                 let mut relationships = HashMap::new();
                 relationships.insert(
