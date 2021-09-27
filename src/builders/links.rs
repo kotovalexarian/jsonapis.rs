@@ -66,93 +66,93 @@ impl Builder for LinksBuilder {
 }
 
 impl LinksBuilder {
-    pub fn self_(self, self_: LinkBuilder) -> Self {
+    pub fn self_<L: Into<LinkBuilder>>(self, self_: L) -> Self {
         Self {
-            self_: Some(self_),
+            self_: Some(self_.into()),
             ..self
         }
     }
 
-    pub fn related(self, related: LinkBuilder) -> Self {
+    pub fn related<L: Into<LinkBuilder>>(self, related: L) -> Self {
         Self {
-            related: Some(related),
+            related: Some(related.into()),
             ..self
         }
     }
 
-    pub fn first(self, first: LinkBuilder) -> Self {
+    pub fn first<L: Into<LinkBuilder>>(self, first: L) -> Self {
         Self {
-            first: Some(first),
+            first: Some(first.into()),
             ..self
         }
     }
 
-    pub fn last(self, last: LinkBuilder) -> Self {
+    pub fn last<L: Into<LinkBuilder>>(self, last: L) -> Self {
         Self {
-            last: Some(last),
+            last: Some(last.into()),
             ..self
         }
     }
 
-    pub fn prev(self, prev: LinkBuilder) -> Self {
+    pub fn prev<L: Into<LinkBuilder>>(self, prev: L) -> Self {
         Self {
-            prev: Some(prev),
+            prev: Some(prev.into()),
             ..self
         }
     }
 
-    pub fn next(self, next: LinkBuilder) -> Self {
+    pub fn next<L: Into<LinkBuilder>>(self, next: L) -> Self {
         Self {
-            next: Some(next),
+            next: Some(next.into()),
             ..self
         }
     }
 
-    pub fn link(self, name: &str, link: LinkBuilder) -> Self {
+    pub fn link<L: Into<LinkBuilder>>(self, name: &str, link: L) -> Self {
         if name == "self" {
             return Self {
-                self_: Some(link),
+                self_: Some(link.into()),
                 ..self
             };
         }
 
         if name == "related" {
             return Self {
-                related: Some(link),
+                related: Some(link.into()),
                 ..self
             };
         }
 
         if name == "first" {
             return Self {
-                first: Some(link),
+                first: Some(link.into()),
                 ..self
             };
         }
 
         if name == "last" {
             return Self {
-                last: Some(link),
+                last: Some(link.into()),
                 ..self
             };
         }
 
         if name == "prev" {
             return Self {
-                prev: Some(link),
+                prev: Some(link.into()),
                 ..self
             };
         }
 
         if name == "next" {
             return Self {
-                next: Some(link),
+                next: Some(link.into()),
                 ..self
             };
         }
 
         let mut other = self.other;
-        other.insert(name.into(), link);
+        other.insert(name.into(), link.into());
 
         Self { other, ..self }
     }
@@ -275,6 +275,42 @@ mod tests {
                     href: "http://last.com".into(),
                     meta: Some(meta()),
                 })),
+                prev: Some(Link::String("http://prev.com".into())),
+                next: Some(Link::String("http://next.com".into())),
+            },
+        );
+    }
+
+    #[test]
+    fn full_implicit_from_str() {
+        assert_eq!(
+            LinksBuilder::default()
+                .self_("http://self.com")
+                .related("http://related.com")
+                .first("http://first.com")
+                .last("http://last.com")
+                .prev("http://prev.com")
+                .next("http://next.com")
+                .link("foo", "http://foo.com")
+                .link("bar", "http://bar.com")
+                .unwrap(),
+            Links {
+                other: {
+                    let mut other = HashMap::new();
+                    other.insert(
+                        "foo".into(),
+                        Link::String("http://foo.com".into()),
+                    );
+                    other.insert(
+                        "bar".into(),
+                        Link::String("http://bar.com".into()),
+                    );
+                    other
+                },
+                self_: Some(Link::String("http://self.com".into())),
+                related: Some(Link::String("http://related.com".into())),
+                first: Some(Link::String("http://first.com".into())),
+                last: Some(Link::String("http://last.com".into())),
                 prev: Some(Link::String("http://prev.com".into())),
                 next: Some(Link::String("http://next.com".into())),
             },

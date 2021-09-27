@@ -29,6 +29,15 @@ impl Builder for LinkBuilder {
     }
 }
 
+impl<S: ToString> From<S> for LinkBuilder {
+    fn from(s: S) -> Self {
+        Self {
+            href: s.to_string(),
+            meta: None,
+        }
+    }
+}
+
 impl LinkBuilder {
     pub fn meta(self, meta: MetaOrAttrsBuilder) -> Self {
         Self {
