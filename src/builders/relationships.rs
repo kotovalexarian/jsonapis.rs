@@ -23,6 +23,16 @@ impl Builder for RelationshipsBuilder {
     }
 }
 
+impl From<Relationships> for RelationshipsBuilder {
+    fn from(relationships: Relationships) -> Self {
+        let mut new_relationships = HashMap::new();
+        for (key, value) in relationships {
+            new_relationships.insert(key, value.into());
+        }
+        Self(new_relationships)
+    }
+}
+
 impl RelationshipsBuilder {
     pub fn rel(self, name: &str, relationship: RelationshipBuilder) -> Self {
         let mut relationships = self.0;
@@ -107,4 +117,6 @@ mod tests {
             },
         );
     }
+
+    // TODO: implicit tests
 }

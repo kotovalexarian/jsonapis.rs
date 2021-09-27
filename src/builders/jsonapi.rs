@@ -29,6 +29,18 @@ impl Builder for JsonApiBuilder {
     }
 }
 
+impl From<JsonApi> for JsonApiBuilder {
+    fn from(jsonapi: JsonApi) -> Self {
+        Self {
+            version: jsonapi.version,
+            meta: match jsonapi.meta {
+                None => None,
+                Some(meta) => Some(meta.into()),
+            },
+        }
+    }
+}
+
 impl From<Version> for JsonApiBuilder {
     fn from(version: Version) -> Self {
         Self {
@@ -122,5 +134,17 @@ mod tests {
                 meta: Some(meta()),
             },
         );
+    }
+
+    #[test]
+    fn implicit_from_entity() {
+        let jsonapi = JsonApi {
+            version: Some(Version::new(456)),
+            meta: Some(meta()),
+        };
+
+        let builder: JsonApiBuilder = jsonapi.clone().into();
+
+        assert_eq!(builder.unwrap(), jsonapi);
     }
 }

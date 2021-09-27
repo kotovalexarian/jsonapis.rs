@@ -61,6 +61,31 @@ impl Builder for ResourceBuilder {
     }
 }
 
+impl From<Resource> for ResourceBuilder {
+    fn from(resource: Resource) -> Self {
+        Self {
+            type_: resource.type_,
+            id: resource.id,
+            meta: match resource.meta {
+                None => None,
+                Some(meta) => Some(meta.into()),
+            },
+            links: match resource.links {
+                None => None,
+                Some(links) => Some(links.into()),
+            },
+            attributes: match resource.attributes {
+                None => None,
+                Some(attributes) => Some(attributes.into()),
+            },
+            relationships: match resource.relationships {
+                None => None,
+                Some(relationships) => Some(relationships.into()),
+            },
+        }
+    }
+}
+
 impl ResourceBuilder {
     pub fn id(self, id: &str) -> Self {
         Self {
@@ -382,4 +407,6 @@ mod tests {
             },
         );
     }
+
+    // TODO: implicit tests
 }

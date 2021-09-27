@@ -29,6 +29,24 @@ impl Builder for LinkBuilder {
     }
 }
 
+impl From<Link> for LinkBuilder {
+    fn from(link: Link) -> Self {
+        match link {
+            Link::String(string) => Self {
+                href: string,
+                meta: None,
+            },
+            Link::Object(link_object) => Self {
+                href: link_object.href,
+                meta: match link_object.meta {
+                    None => None,
+                    Some(meta) => Some(meta.into()),
+                },
+            },
+        }
+    }
+}
+
 impl<S: ToString> From<S> for LinkBuilder {
     fn from(s: S) -> Self {
         Self {
@@ -81,5 +99,26 @@ mod tests {
                 meta: Some(meta()),
             }),
         );
+    }
+
+    #[test]
+    fn implicit_from_entity_string() {
+        let link = Link::String("http://example.com".into());
+
+        let builder: LinkBuilder = link.clone().into();
+
+        assert_eq!(builder.unwrap(), link);
+    }
+
+    #[test]
+    fn implicit_from_entity_object() {
+        let link = Link::Object(LinkObject {
+            href: "http://example.com".into(),
+            meta: Some(meta()),
+        });
+
+        let builder: LinkBuilder = link.clone().into();
+
+        assert_eq!(builder.unwrap(), link);
     }
 }

@@ -23,6 +23,39 @@ impl Builder for DataBuilder {
     }
 }
 
+impl From<Data> for DataBuilder {
+    fn from(data: Data) -> Self {
+        match data {
+            Data::Single(resource) => Self::Single(resource.into()),
+            Data::Multiple(resources) => Self::Multiple({
+                let mut new_resources = vec![];
+                for resource in resources {
+                    new_resources.push(resource.into());
+                }
+                new_resources
+            }),
+        }
+    }
+}
+
+impl From<Resource> for DataBuilder {
+    fn from(resource: Resource) -> Self {
+        Self::Single(resource.into())
+    }
+}
+
+impl From<Vec<Resource>> for DataBuilder {
+    fn from(resources: Vec<Resource>) -> Self {
+        Self::Multiple({
+            let mut new_resources = vec![];
+            for resource in resources {
+                new_resources.push(resource.into());
+            }
+            new_resources
+        })
+    }
+}
+
 impl From<ResourceBuilder> for DataBuilder {
     fn from(resource: ResourceBuilder) -> Self {
         Self::Single(resource)
@@ -106,4 +139,6 @@ mod tests {
             ]),
         );
     }
+
+    // TODO: 3 or 5 implicit tests
 }

@@ -44,6 +44,29 @@ impl Builder for DocumentBuilder {
     }
 }
 
+impl From<Document> for DocumentBuilder {
+    fn from(document: Document) -> Self {
+        Self {
+            jsonapi: match document.jsonapi {
+                None => None,
+                Some(jsonapi) => Some(jsonapi.into()),
+            },
+            meta: match document.meta {
+                None => None,
+                Some(meta) => Some(meta.into()),
+            },
+            links: match document.links {
+                None => None,
+                Some(links) => Some(links.into()),
+            },
+            data: match document.data {
+                None => None,
+                Some(data) => Some(data.into()),
+            },
+        }
+    }
+}
+
 impl DocumentBuilder {
     pub fn jsonapi<J: Into<JsonApiBuilder>>(self, jsonapi: J) -> Self {
         Self {
@@ -427,5 +450,37 @@ mod tests {
                 data: None,
             },
         );
+    }
+
+    #[test]
+    fn implicit_from_entity() {
+        let document = Document {
+            jsonapi: Some(JsonApi {
+                version: Some(Version::new(456)),
+                meta: Some(meta()),
+            }),
+            meta: Some(meta()),
+            links: Some(Links {
+                other: HashMap::new(),
+                self_: Some(Link::String("http://self.com".into())),
+                related: Some(Link::String("http://related.com".into())),
+                first: None,
+                last: None,
+                prev: None,
+                next: None,
+            }),
+            data: Some(Data::Single(Resource {
+                type_: "qwerties".into(),
+                id: Some("123".into()),
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            })),
+        };
+
+        let builder: DocumentBuilder = document.clone().into();
+
+        assert_eq!(builder.unwrap(), document);
     }
 }

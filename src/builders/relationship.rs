@@ -38,6 +38,25 @@ impl Builder for RelationshipBuilder {
     }
 }
 
+impl From<Relationship> for RelationshipBuilder {
+    fn from(relationship: Relationship) -> Self {
+        Self {
+            meta: match relationship.meta {
+                None => None,
+                Some(meta) => Some(meta.into()),
+            },
+            links: match relationship.links {
+                None => None,
+                Some(links) => Some(links.into()),
+            },
+            data: match relationship.data {
+                None => None,
+                Some(data) => Some(data.into()),
+            },
+        }
+    }
+}
+
 impl RelationshipBuilder {
     pub fn meta(self, meta: MetaOrAttrsBuilder) -> Self {
         Self {
@@ -293,5 +312,40 @@ mod tests {
                 data: None,
             },
         );
+    }
+
+    #[test]
+    fn implicit_from_entity() {
+        let relationship = Relationship {
+            meta: Some(meta()),
+            links: Some(Links {
+                other: {
+                    let mut other = HashMap::new();
+                    other.insert(
+                        "foo".into(),
+                        Link::String("http://foo.com".into()),
+                    );
+                    other
+                },
+                self_: Some(Link::String("http://self.com".into())),
+                related: Some(Link::String("http://related.com".into())),
+                first: Some(Link::String("http://first.com".into())),
+                last: Some(Link::String("http://last.com".into())),
+                prev: Some(Link::String("http://prev.com".into())),
+                next: Some(Link::String("http://next.com".into())),
+            }),
+            data: Some(Data::Single(Resource {
+                type_: "qwerties".into(),
+                id: Some("123".into()),
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            })),
+        };
+
+        let builder: RelationshipBuilder = relationship.clone().into();
+
+        assert_eq!(builder.unwrap(), relationship);
     }
 }

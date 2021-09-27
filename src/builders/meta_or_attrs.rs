@@ -23,6 +23,12 @@ impl Builder for MetaOrAttrsBuilder {
     }
 }
 
+impl From<MetaOrAttrs> for MetaOrAttrsBuilder {
+    fn from(meta_or_attrs: MetaOrAttrs) -> Self {
+        Self(meta_or_attrs)
+    }
+}
+
 impl MetaOrAttrsBuilder {
     pub fn item<V: Into<Value>>(self, name: &str, value: V) -> Self {
         let mut meta_or_attrs = self.0;
@@ -88,5 +94,16 @@ mod tests {
                 meta_or_attrs
             }
         );
+    }
+
+    #[test]
+    fn implicit_from_entity() {
+        let mut meta_or_attrs = MetaOrAttrs::new();
+        meta_or_attrs.insert("foo".into(), 123.into());
+        meta_or_attrs.insert("bar".into(), "qwe".into());
+
+        let builder: MetaOrAttrsBuilder = meta_or_attrs.clone().into();
+
+        assert_eq!(builder.unwrap(), meta_or_attrs);
     }
 }
