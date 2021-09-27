@@ -376,4 +376,56 @@ mod tests {
             },
         );
     }
+
+    #[test]
+    fn with_meta1_implicit() {
+        assert_eq!(
+            DocumentBuilder::default()
+                .meta1("foo", 123)
+                .meta1("bar", "car")
+                .unwrap(),
+            Document {
+                jsonapi: None,
+                meta: Some({
+                    let mut meta = MetaOrAttrs::new();
+                    meta.insert("foo".into(), Value::Number(123.into()));
+                    meta.insert("bar".into(), Value::String("car".into()));
+                    meta
+                }),
+                links: None,
+                data: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_link_implicit_from_str() {
+        assert_eq!(
+            DocumentBuilder::default()
+                .link("self", "http://self.com")
+                .link("foo", "http://foo.com")
+                .unwrap(),
+            Document {
+                jsonapi: None,
+                meta: None,
+                links: Some(Links {
+                    other: {
+                        let mut other = HashMap::new();
+                        other.insert(
+                            "foo".into(),
+                            Link::String("http://foo.com".into()),
+                        );
+                        other
+                    },
+                    self_: Some(Link::String("http://self.com".into())),
+                    related: None,
+                    first: None,
+                    last: None,
+                    prev: None,
+                    next: None,
+                }),
+                data: None,
+            },
+        );
+    }
 }

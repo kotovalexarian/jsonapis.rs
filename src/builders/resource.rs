@@ -305,6 +305,29 @@ mod tests {
     }
 
     #[test]
+    fn with_meta1_implicit() {
+        assert_eq!(
+            ResourceBuilder::new("qwerties")
+                .meta1("foo", 123)
+                .meta1("bar", "car")
+                .unwrap(),
+            Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: Some({
+                    let mut meta = MetaOrAttrs::new();
+                    meta.insert("foo".into(), Value::Number(123.into()));
+                    meta.insert("bar".into(), Value::String("car".into()));
+                    meta
+                }),
+                links: None,
+                attributes: None,
+                relationships: None,
+            },
+        );
+    }
+
+    #[test]
     fn with_link_implicit_from_str() {
         assert_eq!(
             ResourceBuilder::new("qwerties")
@@ -332,6 +355,29 @@ mod tests {
                     next: None,
                 }),
                 attributes: None,
+                relationships: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_attr_implicit() {
+        assert_eq!(
+            ResourceBuilder::new("qwerties")
+                .attr("foo", 123)
+                .attr("bar", "car")
+                .unwrap(),
+            Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: Some({
+                    let mut meta = MetaOrAttrs::new();
+                    meta.insert("foo".into(), Value::Number(123.into()));
+                    meta.insert("bar".into(), Value::String("car".into()));
+                    meta
+                }),
                 relationships: None,
             },
         );
