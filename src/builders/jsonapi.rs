@@ -58,9 +58,9 @@ impl JsonApiBuilder {
         }
     }
 
-    pub fn meta(self, meta: MetaOrAttrsBuilder) -> Self {
+    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
         Self {
-            meta: Some(meta),
+            meta: Some(meta.into()),
             ..self
         }
     }
@@ -146,5 +146,16 @@ mod tests {
         let builder: JsonApiBuilder = jsonapi.clone().into();
 
         assert_eq!(builder.unwrap(), jsonapi);
+    }
+
+    #[test]
+    fn with_meta_implicit_from_entity() {
+        assert_eq!(
+            JsonApiBuilder::default().meta(meta()).unwrap(),
+            JsonApi {
+                version: None,
+                meta: Some(meta()),
+            },
+        );
     }
 }

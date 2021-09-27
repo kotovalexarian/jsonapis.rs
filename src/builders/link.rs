@@ -57,9 +57,9 @@ impl<S: ToString> From<S> for LinkBuilder {
 }
 
 impl LinkBuilder {
-    pub fn meta(self, meta: MetaOrAttrsBuilder) -> Self {
+    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
         Self {
-            meta: Some(meta),
+            meta: Some(meta.into()),
             ..self
         }
     }
@@ -120,5 +120,16 @@ mod tests {
         let builder: LinkBuilder = link.clone().into();
 
         assert_eq!(builder.unwrap(), link);
+    }
+
+    #[test]
+    fn with_meta_implicit_from_entity() {
+        assert_eq!(
+            LinkBuilder::new("http://example.com").meta(meta()).unwrap(),
+            Link::Object(LinkObject {
+                href: "http://example.com".into(),
+                meta: Some(meta()),
+            }),
+        );
     }
 }

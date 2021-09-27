@@ -75,16 +75,16 @@ impl DocumentBuilder {
         }
     }
 
-    pub fn meta(self, meta: MetaOrAttrsBuilder) -> Self {
+    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
         Self {
-            meta: Some(meta),
+            meta: Some(meta.into()),
             ..self
         }
     }
 
-    pub fn links(self, links: LinksBuilder) -> Self {
+    pub fn links<L: Into<LinksBuilder>>(self, links: L) -> Self {
         Self {
-            links: Some(links),
+            links: Some(links.into()),
             ..self
         }
     }
@@ -471,5 +471,31 @@ mod tests {
         let builder: DocumentBuilder = document.clone().into();
 
         assert_eq!(builder.unwrap(), document);
+    }
+
+    #[test]
+    fn with_meta_implicit_from_entity() {
+        assert_eq!(
+            DocumentBuilder::default().meta(meta()).unwrap(),
+            Document {
+                jsonapi: None,
+                meta: Some(meta()),
+                links: None,
+                data: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_links_implicit_from_entity() {
+        assert_eq!(
+            DocumentBuilder::default().links(links()).unwrap(),
+            Document {
+                jsonapi: None,
+                meta: None,
+                links: Some(links()),
+                data: None,
+            },
+        );
     }
 }

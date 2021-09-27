@@ -58,16 +58,16 @@ impl From<Relationship> for RelationshipBuilder {
 }
 
 impl RelationshipBuilder {
-    pub fn meta(self, meta: MetaOrAttrsBuilder) -> Self {
+    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
         Self {
-            meta: Some(meta),
+            meta: Some(meta.into()),
             ..self
         }
     }
 
-    pub fn links(self, links: LinksBuilder) -> Self {
+    pub fn links<L: Into<LinksBuilder>>(self, links: L) -> Self {
         Self {
-            links: Some(links),
+            links: Some(links.into()),
             ..self
         }
     }
@@ -77,10 +77,6 @@ impl RelationshipBuilder {
             data: Some(data.into()),
             ..self
         }
-    }
-
-    pub fn data_single(self, resource: ResourceBuilder) -> Self {
-        self.data(resource)
     }
 
     pub fn meta1<V: Into<Value>>(self, name: &str, meta1: V) -> Self {
@@ -336,5 +332,81 @@ mod tests {
         let builder: RelationshipBuilder = relationship.clone().into();
 
         assert_eq!(builder.unwrap(), relationship);
+    }
+
+    #[test]
+    fn with_meta_implicit_from_entity() {
+        assert_eq!(
+            RelationshipBuilder::default().meta(meta()).unwrap(),
+            Relationship {
+                meta: Some(meta()),
+                links: None,
+                data: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_links_implicit_from_entity() {
+        assert_eq!(
+            RelationshipBuilder::default().links(links()).unwrap(),
+            Relationship {
+                meta: None,
+                links: Some(links()),
+                data: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_data_implicit_from_entity() {
+        assert_eq!(
+            RelationshipBuilder::default().data(Data::Single(Resource {
+                type_: "qwerties".into(),
+                id: Some("123".into()),
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            })).unwrap(),
+            Relationship {
+                meta: None,
+                links: None,
+                data: Some(Data::Single(Resource {
+                    type_: "qwerties".into(),
+                    id: Some("123".into()),
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                })),
+            },
+        );
+    }
+
+    #[test]
+    fn with_data_single_implicit_from_entity() {
+        assert_eq!(
+            RelationshipBuilder::default().data(Resource {
+                type_: "qwerties".into(),
+                id: Some("123".into()),
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: None,
+            }).unwrap(),
+            Relationship {
+                meta: None,
+                links: None,
+                data: Some(Data::Single(Resource {
+                    type_: "qwerties".into(),
+                    id: Some("123".into()),
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                })),
+            },
+        );
     }
 }

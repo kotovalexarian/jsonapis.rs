@@ -94,30 +94,30 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn meta(self, meta: MetaOrAttrsBuilder) -> Self {
+    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
         Self {
-            meta: Some(meta),
+            meta: Some(meta.into()),
             ..self
         }
     }
 
-    pub fn links(self, links: LinksBuilder) -> Self {
+    pub fn links<L: Into<LinksBuilder>>(self, links: L) -> Self {
         Self {
-            links: Some(links),
+            links: Some(links.into()),
             ..self
         }
     }
 
-    pub fn attributes(self, attributes: MetaOrAttrsBuilder) -> Self {
+    pub fn attributes<M: Into<MetaOrAttrsBuilder>>(self, attributes: M) -> Self {
         Self {
-            attributes: Some(attributes),
+            attributes: Some(attributes.into()),
             ..self
         }
     }
 
-    pub fn relationships(self, relationships: RelationshipsBuilder) -> Self {
+    pub fn relationships<R: Into<RelationshipsBuilder>>(self, relationships: R) -> Self {
         Self {
-            relationships: Some(relationships),
+            relationships: Some(relationships.into()),
             ..self
         }
     }
@@ -158,11 +158,11 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn rel(self, name: &str, relationship: RelationshipBuilder) -> Self {
+    pub fn rel<R: Into<RelationshipBuilder>>(self, name: &str, relationship: R) -> Self {
         let relationships = self
             .relationships
             .unwrap_or(RelationshipsBuilder::default())
-            .rel(name, relationship);
+            .rel(name, relationship.into());
 
         Self {
             relationships: Some(relationships),
@@ -408,6 +408,118 @@ mod tests {
                     meta
                 }),
                 relationships: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_meta_implicit_from_entity() {
+        assert_eq!(
+            ResourceBuilder::new("qwerties").meta(meta()).unwrap(),
+            Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: Some(meta()),
+                links: None,
+                attributes: None,
+                relationships: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_links_implicit_from_entity() {
+        assert_eq!(
+            ResourceBuilder::new("qwerties").links(links()).unwrap(),
+            Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: Some(links()),
+                attributes: None,
+                relationships: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_attributes_implicit_from_entity() {
+        assert_eq!(
+            ResourceBuilder::new("qwerties").attributes(meta()).unwrap(),
+            Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: Some(meta()),
+                relationships: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_relationships_implicit_from_entity() {
+        assert_eq!(
+            ResourceBuilder::new("qwerties").relationships({
+                let mut relationships = HashMap::new();
+                relationships.insert(
+                    "foo".into(),
+                    Relationship {
+                        meta: Some(meta()),
+                        links: Some(links()),
+                        data: None,
+                    },
+                );
+                relationships
+            }).unwrap(),
+            Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: Some({
+                    let mut relationships = HashMap::new();
+                    relationships.insert(
+                        "foo".into(),
+                        Relationship {
+                            meta: Some(meta()),
+                            links: Some(links()),
+                            data: None,
+                        },
+                    );
+                    relationships
+                }),
+            },
+        );
+    }
+
+    #[test]
+    fn with_rel_implicit_from_entity() {
+        assert_eq!(
+            ResourceBuilder::new("qwerties").rel("foo", Relationship {
+                meta: Some(meta()),
+                links: Some(links()),
+                data: None,
+            }).unwrap(),
+            Resource {
+                type_: "qwerties".into(),
+                id: None,
+                meta: None,
+                links: None,
+                attributes: None,
+                relationships: Some({
+                    let mut relationships = HashMap::new();
+                    relationships.insert(
+                        "foo".into(),
+                        Relationship {
+                            meta: Some(meta()),
+                            links: Some(links()),
+                            data: None,
+                        },
+                    );
+                    relationships
+                }),
             },
         );
     }

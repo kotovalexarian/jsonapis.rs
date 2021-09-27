@@ -34,9 +34,9 @@ impl From<Relationships> for RelationshipsBuilder {
 }
 
 impl RelationshipsBuilder {
-    pub fn rel(self, name: &str, relationship: RelationshipBuilder) -> Self {
+    pub fn rel<R: Into<RelationshipBuilder>>(self, name: &str, relationship: R) -> Self {
         let mut relationships = self.0;
-        relationships.insert(name.into(), relationship);
+        relationships.insert(name.into(), relationship.into());
         Self(relationships)
     }
 }
@@ -50,6 +50,25 @@ mod tests {
         meta.insert("foo".into(), 123.into());
         meta.insert("bar".into(), "qwe".into());
         meta
+    }
+
+    fn links() -> Links {
+        Links {
+            other: {
+                let mut other = HashMap::new();
+                other.insert(
+                    "qwe".into(),
+                    Link::String("http://qwe.com".into()),
+                );
+                other
+            },
+            self_: Some(Link::String("http://self.com".into())),
+            related: None,
+            first: None,
+            last: None,
+            prev: None,
+            next: None,
+        }
     }
 
     #[test]
@@ -111,6 +130,29 @@ mod tests {
                             attributes: None,
                             relationships: None,
                         })),
+                    },
+                );
+                relationships
+            },
+        );
+    }
+
+    #[test]
+    fn with_rel_implicit_from_entity() {
+        assert_eq!(
+            RelationshipsBuilder::default().rel("qwerty", Relationship {
+                meta: Some(meta()),
+                links: Some(links()),
+                data: None,
+            }).unwrap(),
+            {
+                let mut relationships = HashMap::new();
+                relationships.insert(
+                    "qwerty".into(),
+                    Relationship {
+                        meta: Some(meta()),
+                        links: Some(links()),
+                        data: None,
                     },
                 );
                 relationships
