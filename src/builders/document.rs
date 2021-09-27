@@ -45,9 +45,9 @@ impl Builder for DocumentBuilder {
 }
 
 impl DocumentBuilder {
-    pub fn jsonapi(self, jsonapi: JsonApiBuilder) -> Self {
+    pub fn jsonapi<J: Into<JsonApiBuilder>>(self, jsonapi: J) -> Self {
         Self {
-            jsonapi: Some(jsonapi),
+            jsonapi: Some(jsonapi.into()),
             ..self
         }
     }
@@ -134,6 +134,24 @@ mod tests {
         assert_eq!(
             DocumentBuilder::default()
                 .jsonapi(JsonApiBuilder::default().version(Version::new(456)))
+                .unwrap(),
+            Document {
+                jsonapi: Some(JsonApi {
+                    version: Some(Version::new(456)),
+                    meta: None,
+                }),
+                meta: None,
+                links: None,
+                data: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_jsonapi_implicit_from_version() {
+        assert_eq!(
+            DocumentBuilder::default()
+                .jsonapi(Version::new(456))
                 .unwrap(),
             Document {
                 jsonapi: Some(JsonApi {

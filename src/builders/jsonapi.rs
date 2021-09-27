@@ -29,6 +29,15 @@ impl Builder for JsonApiBuilder {
     }
 }
 
+impl From<Version> for JsonApiBuilder {
+    fn from(version: Version) -> Self {
+        Self {
+            version: Some(version),
+            meta: None,
+        }
+    }
+}
+
 impl JsonApiBuilder {
     pub fn version(self, version: Version) -> Self {
         Self {
