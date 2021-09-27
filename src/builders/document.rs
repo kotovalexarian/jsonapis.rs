@@ -72,6 +72,30 @@ impl DocumentBuilder {
             ..self
         }
     }
+
+    pub fn meta1<V: Into<Value>>(self, name: &str, meta1: V) -> Self {
+        let meta = self
+            .meta
+            .unwrap_or(MetaOrAttrsBuilder::default())
+            .item(name, meta1);
+
+        Self {
+            meta: Some(meta),
+            ..self
+        }
+    }
+
+    pub fn link<L: Into<LinkBuilder>>(self, name: &str, link: L) -> Self {
+        let links = self
+            .links
+            .unwrap_or(LinksBuilder::default())
+            .link(name, link);
+
+        Self {
+            links: Some(links),
+            ..self
+        }
+    }
 }
 
 #[cfg(test)]
@@ -108,6 +132,11 @@ mod tests {
                         .item("foo", 123)
                         .item("bar", "qwe"),
                 )
+                .links(
+                    LinksBuilder::default()
+                        .self_(LinkBuilder::new("http://self.com"))
+                        .link("qwe", LinkBuilder::new("http://qwe.com")),
+                )
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
                 .unwrap(),
             Document {
@@ -116,7 +145,67 @@ mod tests {
                     meta: None,
                 }),
                 meta: Some(meta()),
-                links: None,
+                links: Some(Links {
+                    other: {
+                        let mut other = HashMap::new();
+                        other.insert(
+                            "qwe".into(),
+                            Link::String("http://qwe.com".into()),
+                        );
+                        other
+                    },
+                    self_: Some(Link::String("http://self.com".into())),
+                    related: None,
+                    first: None,
+                    last: None,
+                    prev: None,
+                    next: None,
+                }),
+                data: Some(Data::Single(Resource {
+                    type_: "qwerties".into(),
+                    id: None,
+                    meta: None,
+                    links: None,
+                    attributes: None,
+                    relationships: None,
+                })),
+            },
+        );
+    }
+
+    #[test]
+    fn full_delegators() {
+        assert_eq!(
+            DocumentBuilder::default()
+                .jsonapi(JsonApiBuilder::default().version(Version::new(456)))
+                .meta1("foo", 123)
+                .meta1("bar", "qwe")
+                .link("self", LinkBuilder::new("http://self.com"))
+                .link("qwe", LinkBuilder::new("http://qwe.com"))
+                .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
+                .unwrap(),
+            Document {
+                jsonapi: Some(JsonApi {
+                    version: Some(Version::new(456)),
+                    meta: None,
+                }),
+                meta: Some(meta()),
+                links: Some(Links {
+                    other: {
+                        let mut other = HashMap::new();
+                        other.insert(
+                            "qwe".into(),
+                            Link::String("http://qwe.com".into()),
+                        );
+                        other
+                    },
+                    self_: Some(Link::String("http://self.com".into())),
+                    related: None,
+                    first: None,
+                    last: None,
+                    prev: None,
+                    next: None,
+                }),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),
                     id: None,
