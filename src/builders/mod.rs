@@ -30,7 +30,19 @@ pub trait Builder: Clone + Debug + Eq + PartialEq + Sized {
 
     fn finish(self) -> Result<Self::Entity, ()>;
 
+    fn expect(self, msg: &str) -> Self::Entity {
+        self.finish().expect(msg)
+    }
+
+    fn expect_err(self, msg: &str) {
+        self.finish().expect_err(msg)
+    }
+
     fn unwrap(self) -> Self::Entity {
         self.finish().unwrap()
+    }
+
+    fn unwrap_err(self) {
+        self.finish().unwrap_err()
     }
 }
