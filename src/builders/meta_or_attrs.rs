@@ -13,13 +13,7 @@ impl Builder for MetaOrAttrsBuilder {
     type Entity = MetaOrAttrs;
 
     fn finish(self) -> Result<Self::Entity, ()> {
-        let mut meta_or_attrs = MetaOrAttrs::new();
-
-        for (key, value) in self.0 {
-            meta_or_attrs.insert(key, value);
-        }
-
-        Ok(meta_or_attrs)
+        Ok(self.0)
     }
 }
 
