@@ -19,11 +19,9 @@ fn main() {
                 .attr("summary", "Here is the beginning of some blog post.")
                 .rel(
                     "author",
-                    jsonapis::RelationshipBuilder::default().data(
-                        jsonapis::ResourceBuilder::new_with_id("users", "1")
-                            .link("self", "http://example.com/users/1.json")
-                            .attr("username", "alice"),
-                    ),
+                    jsonapis::ResourceBuilder::new_with_id("users", "1")
+                        .link("self", "http://example.com/users/1.json")
+                        .attr("username", "alice"),
                 ),
             jsonapis::ResourceBuilder::new_with_id("posts", "2")
                 .link("self", "http://example.com/posts/2.json")
@@ -31,11 +29,9 @@ fn main() {
                 .attr("summary", "Here is the beginning of other blog post.")
                 .rel(
                     "author",
-                    jsonapis::RelationshipBuilder::default().data(
-                        jsonapis::ResourceBuilder::new_with_id("users", "2")
-                            .link("self", "http://example.com/users/2.json")
-                            .attr("username", "bob"),
-                    ),
+                    jsonapis::ResourceBuilder::new_with_id("users", "2")
+                        .link("self", "http://example.com/users/2.json")
+                        .attr("username", "bob"),
                 ),
         ])
         .finish()

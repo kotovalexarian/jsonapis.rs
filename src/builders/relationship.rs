@@ -57,6 +57,12 @@ impl From<Relationship> for RelationshipBuilder {
     }
 }
 
+impl<R: Into<ResourceBuilder>> From<R> for RelationshipBuilder {
+    fn from(resource: R) -> Self {
+        Self::default().data(resource.into())
+    }
+}
+
 impl RelationshipBuilder {
     pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
         Self {
