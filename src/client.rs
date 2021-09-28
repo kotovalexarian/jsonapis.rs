@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 use reqwest::{
     header::{HeaderValue, ACCEPT, CONTENT_TYPE},
-    Client as ReqClient, Error as ReqError, Url, UrlError,
+    Client as ReqClient, Error as ReqError, StatusCode, Url, UrlError,
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
@@ -27,6 +27,7 @@ pub enum Error {
     Response(Response),
     URL(UrlError),
     HTTP(ReqError),
+    InvalidStatus(StatusCode),
     NoContentType,
     InvalidContentType(HeaderValue),
     Text(ReqError),
@@ -62,6 +63,10 @@ impl Client {
             .header(CONTENT_TYPE, MIME)
             .send()
             .map_err(|error| Error::HTTP(error))?;
+
+        if response.status() != StatusCode::OK {
+            return Err(Error::InvalidStatus(response.status()));
+        }
 
         let content_type = response
             .headers()
