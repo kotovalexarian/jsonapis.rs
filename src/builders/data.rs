@@ -38,14 +38,14 @@ impl From<Data> for DataBuilder {
     }
 }
 
-impl From<Resource> for DataBuilder {
-    fn from(resource: Resource) -> Self {
+impl<R: Into<ResourceBuilder>> From<R> for DataBuilder {
+    fn from(resource: R) -> Self {
         Self::Single(resource.into())
     }
 }
 
-impl From<Vec<Resource>> for DataBuilder {
-    fn from(resources: Vec<Resource>) -> Self {
+impl<R: Into<ResourceBuilder>> From<Vec<R>> for DataBuilder {
+    fn from(resources: Vec<R>) -> Self {
         Self::Multiple({
             let mut new_resources = vec![];
             for resource in resources {
@@ -53,18 +53,6 @@ impl From<Vec<Resource>> for DataBuilder {
             }
             new_resources
         })
-    }
-}
-
-impl From<ResourceBuilder> for DataBuilder {
-    fn from(resource: ResourceBuilder) -> Self {
-        Self::Single(resource)
-    }
-}
-
-impl From<Vec<ResourceBuilder>> for DataBuilder {
-    fn from(resources: Vec<ResourceBuilder>) -> Self {
-        Self::Multiple(resources)
     }
 }
 
