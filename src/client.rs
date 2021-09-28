@@ -109,6 +109,17 @@ impl Client {
             .send()
             .map_err(|error| Error::HTTP(error))?;
 
+        let content_type = response
+            .headers()
+            .get(CONTENT_TYPE)
+            .ok_or(Error::NoContentType)?;
+
+        if content_type != MIME
+            && !content_type.as_bytes().starts_with(MIME_PREFIX.as_bytes())
+        {
+            return Err(Error::InvalidContentType(content_type.clone()));
+        }
+
         let json = response.text().map_err(|error| Error::Text(error))?;
 
         let document: Document =
