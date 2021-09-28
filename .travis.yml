@@ -1,3 +1,26 @@
 language: rust
 
 rust: [stable, beta, nightly]
+
+env:
+  - FEATURES=''
+  - FEATURES='--no-default-features'
+
+install: cargo build --verbose $FEATURES
+
+script: cargo test --verbose $FEATURES
+
+jobs:
+  include:
+    - rust: stable
+      env: FEATURES=''
+    - rust: beta
+      env: FEATURES=''
+    - rust: nightly
+      env: FEATURES=''
+    - rust: stable
+      env: FEATURES='--no-default-features'
+    - rust: beta
+      env: FEATURES='--no-default-features'
+    - rust: nightly
+      env: FEATURES='--no-default-features'
