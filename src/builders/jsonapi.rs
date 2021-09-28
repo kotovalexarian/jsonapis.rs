@@ -1,18 +1,9 @@
 use super::*;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct JsonApiBuilder {
     version: Option<Version>,
     meta: Option<MetaOrAttrsBuilder>,
-}
-
-impl Default for JsonApiBuilder {
-    fn default() -> Self {
-        Self {
-            version: None,
-            meta: None,
-        }
-    }
 }
 
 impl Builder for JsonApiBuilder {
@@ -49,10 +40,7 @@ impl From<JsonApi> for JsonApiBuilder {
     fn from(jsonapi: JsonApi) -> Self {
         Self {
             version: jsonapi.version,
-            meta: match jsonapi.meta {
-                None => None,
-                Some(meta) => Some(meta.into()),
-            },
+            meta: jsonapi.meta.map(|meta| meta.into()),
         }
     }
 }

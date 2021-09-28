@@ -1,13 +1,7 @@
 use super::*;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct MetaOrAttrsBuilder(MetaOrAttrs);
-
-impl Default for MetaOrAttrsBuilder {
-    fn default() -> Self {
-        Self(MetaOrAttrs::new())
-    }
-}
 
 impl Builder for MetaOrAttrsBuilder {
     type Entity = MetaOrAttrs;

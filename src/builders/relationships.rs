@@ -1,13 +1,7 @@
 use super::*;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct RelationshipsBuilder(HashMap<String, RelationshipBuilder>);
-
-impl Default for RelationshipsBuilder {
-    fn default() -> Self {
-        Self(HashMap::new())
-    }
-}
 
 impl Builder for RelationshipsBuilder {
     type Entity = Relationships;

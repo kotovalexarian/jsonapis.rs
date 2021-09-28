@@ -106,7 +106,7 @@ impl ResourceBuilder {
     pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
         let meta = self
             .meta
-            .unwrap_or(MetaOrAttrsBuilder::default())
+            .unwrap_or_default()
             .item(name, meta1);
 
         Self {
@@ -122,7 +122,7 @@ impl ResourceBuilder {
     ) -> Self {
         let links = self
             .links
-            .unwrap_or(LinksBuilder::default())
+            .unwrap_or_default()
             .link(name, link);
 
         Self {
@@ -138,7 +138,7 @@ impl ResourceBuilder {
     ) -> Self {
         let attributes = self
             .attributes
-            .unwrap_or(MetaOrAttrsBuilder::default())
+            .unwrap_or_default()
             .item(name, attribute);
 
         Self {
@@ -154,7 +154,7 @@ impl ResourceBuilder {
     ) -> Self {
         let relationships = self
             .relationships
-            .unwrap_or(RelationshipsBuilder::default())
+            .unwrap_or_default()
             .rel(name, relationship.into());
 
         Self {
@@ -169,22 +169,10 @@ impl From<Resource> for ResourceBuilder {
         Self {
             type_: resource.type_,
             id: resource.id,
-            meta: match resource.meta {
-                None => None,
-                Some(meta) => Some(meta.into()),
-            },
-            links: match resource.links {
-                None => None,
-                Some(links) => Some(links.into()),
-            },
-            attributes: match resource.attributes {
-                None => None,
-                Some(attributes) => Some(attributes.into()),
-            },
-            relationships: match resource.relationships {
-                None => None,
-                Some(relationships) => Some(relationships.into()),
-            },
+            meta: resource.meta.map(|meta| meta.into()),
+            links: resource.links.map(|links| links.into()),
+            attributes: resource.attributes.map(|attributes| attributes.into()),
+            relationships: resource.relationships.map(|relationships| relationships.into()),
         }
     }
 }

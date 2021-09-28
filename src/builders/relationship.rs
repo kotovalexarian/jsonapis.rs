@@ -1,20 +1,10 @@
 use super::*;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct RelationshipBuilder {
     meta: Option<MetaOrAttrsBuilder>,
     links: Option<LinksBuilder>,
     data: Option<DataBuilder>,
-}
-
-impl Default for RelationshipBuilder {
-    fn default() -> Self {
-        Self {
-            meta: None,
-            links: None,
-            data: None,
-        }
-    }
 }
 
 impl Builder for RelationshipBuilder {
@@ -63,7 +53,7 @@ impl RelationshipBuilder {
     pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
         let meta = self
             .meta
-            .unwrap_or(MetaOrAttrsBuilder::default())
+            .unwrap_or_default()
             .item(name, meta1);
 
         Self {
@@ -79,7 +69,7 @@ impl RelationshipBuilder {
     ) -> Self {
         let links = self
             .links
-            .unwrap_or(LinksBuilder::default())
+            .unwrap_or_default()
             .link(name, link);
 
         Self {
@@ -92,18 +82,9 @@ impl RelationshipBuilder {
 impl From<Relationship> for RelationshipBuilder {
     fn from(relationship: Relationship) -> Self {
         Self {
-            meta: match relationship.meta {
-                None => None,
-                Some(meta) => Some(meta.into()),
-            },
-            links: match relationship.links {
-                None => None,
-                Some(links) => Some(links.into()),
-            },
-            data: match relationship.data {
-                None => None,
-                Some(data) => Some(data.into()),
-            },
+            meta: relationship.meta.map(|meta| meta.into()),
+            links: relationship.links.map(|links| links.into()),
+            data: relationship.data.map(|data| data.into()),
         }
     }
 }

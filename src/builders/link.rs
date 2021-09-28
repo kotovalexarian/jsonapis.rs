@@ -47,10 +47,7 @@ impl From<Link> for LinkBuilder {
             },
             Link::Object(link_object) => Self {
                 href: link_object.href,
-                meta: match link_object.meta {
-                    None => None,
-                    Some(meta) => Some(meta.into()),
-                },
+                meta: link_object.meta.map(|meta| meta.into()),
             },
         }
     }

@@ -1,6 +1,6 @@
 use super::*;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct LinksBuilder {
     pub other: HashMap<String, LinkBuilder>,
     pub self_: Option<LinkBuilder>,
@@ -9,20 +9,6 @@ pub struct LinksBuilder {
     pub last: Option<LinkBuilder>,
     pub prev: Option<LinkBuilder>,
     pub next: Option<LinkBuilder>,
-}
-
-impl Default for LinksBuilder {
-    fn default() -> Self {
-        Self {
-            other: HashMap::new(),
-            self_: None,
-            related: None,
-            first: None,
-            last: None,
-            prev: None,
-            next: None,
-        }
-    }
 }
 
 impl Builder for LinksBuilder {
@@ -174,30 +160,12 @@ impl From<Links> for LinksBuilder {
                 }
                 other
             },
-            self_: match links.self_ {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            related: match links.related {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            first: match links.first {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            last: match links.last {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            prev: match links.prev {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            next: match links.next {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
+            self_: links.self_.map(|self_| self_.into()),
+            related: links.related.map(|related| related.into()),
+            first: links.first.map(|first| first.into()),
+            last: links.last.map(|last| last.into()),
+            prev: links.prev.map(|prev| prev.into()),
+            next: links.next.map(|next| next.into()),
         }
     }
 }

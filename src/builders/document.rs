@@ -1,22 +1,11 @@
 use super::*;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct DocumentBuilder {
     jsonapi: Option<JsonApiBuilder>,
     meta: Option<MetaOrAttrsBuilder>,
     links: Option<LinksBuilder>,
     data: Option<DataBuilder>,
-}
-
-impl Default for DocumentBuilder {
-    fn default() -> Self {
-        Self {
-            jsonapi: None,
-            meta: None,
-            links: None,
-            data: None,
-        }
-    }
 }
 
 impl Builder for DocumentBuilder {
@@ -76,7 +65,7 @@ impl DocumentBuilder {
     pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
         let meta = self
             .meta
-            .unwrap_or(MetaOrAttrsBuilder::default())
+            .unwrap_or_default()
             .item(name, meta1);
 
         Self {
@@ -92,7 +81,7 @@ impl DocumentBuilder {
     ) -> Self {
         let links = self
             .links
-            .unwrap_or(LinksBuilder::default())
+            .unwrap_or_default()
             .link(name, link);
 
         Self {
@@ -105,22 +94,10 @@ impl DocumentBuilder {
 impl From<Document> for DocumentBuilder {
     fn from(document: Document) -> Self {
         Self {
-            jsonapi: match document.jsonapi {
-                None => None,
-                Some(jsonapi) => Some(jsonapi.into()),
-            },
-            meta: match document.meta {
-                None => None,
-                Some(meta) => Some(meta.into()),
-            },
-            links: match document.links {
-                None => None,
-                Some(links) => Some(links.into()),
-            },
-            data: match document.data {
-                None => None,
-                Some(data) => Some(data.into()),
-            },
+            jsonapi: document.jsonapi.map(|jsonapi| jsonapi.into()),
+            meta: document.meta.map(|meta| meta.into()),
+            links: document.links.map(|links| links.into()),
+            data: document.data.map(|data| data.into()),
         }
     }
 }
