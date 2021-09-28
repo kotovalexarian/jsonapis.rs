@@ -34,7 +34,6 @@ fn main() {
                         .attr("username", "bob"),
                 ),
         ])
-        .finish()
         .unwrap();
 
     let expected_value = json!({
