@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 use reqwest::{
     header::{HeaderValue, ACCEPT, CONTENT_TYPE},
-    Client as ReqClient, Error as ReqError, StatusCode, Url, UrlError,
+    Client as ReqClient, Error as ReqError, RequestBuilder, StatusCode, Url, UrlError,
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
@@ -57,35 +57,14 @@ impl Client {
             Url::parse_with_params(&format!("{}{}.json", self.0, path), params)
                 .map_err(|error| Error::URL(error))?;
 
-        let mut response = ReqClient::new()
-            .get(url)
-            .header(ACCEPT, MIME)
-            .header(CONTENT_TYPE, MIME)
-            .send()
-            .map_err(|error| Error::HTTP(error))?;
+        let (status, document) = Self::make_request(ReqClient::new().get(url))?;
 
-        if response.status() != StatusCode::OK {
-            return Err(Error::InvalidStatus(response.status()));
-        }
-
-        let content_type = response
-            .headers()
-            .get(CONTENT_TYPE)
-            .ok_or(Error::NoContentType)?;
-
-        if content_type != MIME
-            && !content_type.as_bytes().starts_with(MIME_PREFIX.as_bytes())
-        {
-            return Err(Error::InvalidContentType(content_type.clone()));
-        }
-
-        let json = response.text().map_err(|error| Error::Text(error))?;
-
-        let document: Document =
-            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
-
-        if response.status().is_success() {
-            Ok(Response { document })
+        if status.is_success() {
+            if status == StatusCode::OK {
+                Ok(Response { document })
+            } else {
+                Err(Error::InvalidStatus(status))
+            }
         } else {
             Err(Error::Response(Response { document }))
         }
@@ -101,17 +80,25 @@ impl Client {
 
         let document: &Document = document.into();
 
-        let mut response = ReqClient::new()
-            .post(url)
-            .json(document)
+        let (status, document) = Self::make_request(ReqClient::new().post(url).json(document))?;
+
+        if status.is_success() {
+            if status == StatusCode::CREATED {
+                Ok(Response { document })
+            } else {
+                Err(Error::InvalidStatus(status))
+            }
+        } else {
+            Err(Error::Response(Response { document }))
+        }
+    }
+
+    fn make_request(request_builder: RequestBuilder) -> std::result::Result<(StatusCode, Document), Error> {
+        let mut response = request_builder
             .header(ACCEPT, MIME)
             .header(CONTENT_TYPE, MIME)
             .send()
             .map_err(|error| Error::HTTP(error))?;
-
-        if response.status() != StatusCode::CREATED {
-            return Err(Error::InvalidStatus(response.status()));
-        }
 
         let content_type = response
             .headers()
@@ -126,13 +113,8 @@ impl Client {
 
         let json = response.text().map_err(|error| Error::Text(error))?;
 
-        let document: Document =
-            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
+        let document = serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
 
-        if response.status().is_success() {
-            Ok(Response { document })
-        } else {
-            Err(Error::Response(Response { document }))
-        }
+        Ok((response.status(), document))
     }
 }
