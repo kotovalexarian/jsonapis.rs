@@ -4,7 +4,8 @@ use std::fmt::Display;
 
 use reqwest::{
     header::{HeaderValue, ACCEPT, CONTENT_TYPE},
-    Client as ReqClient, Error as ReqError, RequestBuilder, StatusCode, Url, UrlError,
+    Client as ReqClient, Error as ReqError, RequestBuilder, StatusCode, Url,
+    UrlError,
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
@@ -80,7 +81,8 @@ impl Client {
 
         let document: &Document = document.into();
 
-        let (status, document) = Self::make_request(ReqClient::new().post(url).json(document))?;
+        let (status, document) =
+            Self::make_request(ReqClient::new().post(url).json(document))?;
 
         if status.is_success() {
             if status == StatusCode::CREATED {
@@ -93,7 +95,9 @@ impl Client {
         }
     }
 
-    fn make_request(request_builder: RequestBuilder) -> std::result::Result<(StatusCode, Document), Error> {
+    fn make_request(
+        request_builder: RequestBuilder,
+    ) -> std::result::Result<(StatusCode, Document), Error> {
         let mut response = request_builder
             .header(ACCEPT, MIME)
             .header(CONTENT_TYPE, MIME)
@@ -113,7 +117,8 @@ impl Client {
 
         let json = response.text().map_err(|error| Error::Text(error))?;
 
-        let document = serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
+        let document =
+            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
 
         Ok((response.status(), document))
     }
