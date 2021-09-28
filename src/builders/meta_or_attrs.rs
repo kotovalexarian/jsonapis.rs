@@ -30,9 +30,9 @@ impl From<MetaOrAttrs> for MetaOrAttrsBuilder {
 }
 
 impl MetaOrAttrsBuilder {
-    pub fn item<V: Into<Value>>(self, name: &str, value: V) -> Self {
+    pub fn item<N: ToString, V: Into<Value>>(self, name: N, value: V) -> Self {
         let mut meta_or_attrs = self.0;
-        meta_or_attrs.insert(name.into(), value.into());
+        meta_or_attrs.insert(name.to_string(), value.into());
         Self(meta_or_attrs)
     }
 }

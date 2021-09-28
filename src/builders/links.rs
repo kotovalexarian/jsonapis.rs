@@ -146,7 +146,13 @@ impl LinksBuilder {
         }
     }
 
-    pub fn link<L: Into<LinkBuilder>>(self, name: &str, link: L) -> Self {
+    pub fn link<N: ToString, L: Into<LinkBuilder>>(
+        self,
+        name: N,
+        link: L,
+    ) -> Self {
+        let name = name.to_string();
+
         if name == "self" {
             return Self {
                 self_: Some(link.into()),
@@ -190,7 +196,7 @@ impl LinksBuilder {
         }
 
         let mut other = self.other;
-        other.insert(name.into(), link.into());
+        other.insert(name, link.into());
 
         Self { other, ..self }
     }

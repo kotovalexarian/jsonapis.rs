@@ -11,9 +11,9 @@ pub struct ResourceBuilder {
 }
 
 impl ResourceBuilder {
-    pub fn new(type_: &str) -> Self {
+    pub fn new<T: ToString>(type_: T) -> Self {
         Self {
-            type_: type_.into(),
+            type_: type_.to_string(),
             id: None,
             meta: None,
             links: None,
@@ -22,9 +22,9 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn new_with_id<I: ToString>(type_: &str, id: I) -> Self {
+    pub fn new_with_id<T: ToString, I: ToString>(type_: T, id: I) -> Self {
         Self {
-            type_: type_.into(),
+            type_: type_.to_string(),
             id: Some(id.to_string()),
             meta: None,
             links: None,
@@ -87,9 +87,9 @@ impl From<Resource> for ResourceBuilder {
 }
 
 impl ResourceBuilder {
-    pub fn id(self, id: &str) -> Self {
+    pub fn id<I: ToString>(self, id: I) -> Self {
         Self {
-            id: Some(id.into()),
+            id: Some(id.to_string()),
             ..self
         }
     }
@@ -128,7 +128,7 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn meta1<V: Into<Value>>(self, name: &str, meta1: V) -> Self {
+    pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
         let meta = self
             .meta
             .unwrap_or(MetaOrAttrsBuilder::default())
@@ -140,7 +140,11 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn link<L: Into<LinkBuilder>>(self, name: &str, link: L) -> Self {
+    pub fn link<N: ToString, L: Into<LinkBuilder>>(
+        self,
+        name: N,
+        link: L,
+    ) -> Self {
         let links = self
             .links
             .unwrap_or(LinksBuilder::default())
@@ -152,7 +156,11 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn attr<V: Into<Value>>(self, name: &str, attribute: V) -> Self {
+    pub fn attr<N: ToString, V: Into<Value>>(
+        self,
+        name: N,
+        attribute: V,
+    ) -> Self {
         let attributes = self
             .attributes
             .unwrap_or(MetaOrAttrsBuilder::default())
@@ -164,9 +172,9 @@ impl ResourceBuilder {
         }
     }
 
-    pub fn rel<R: Into<RelationshipBuilder>>(
+    pub fn rel<N: ToString, R: Into<RelationshipBuilder>>(
         self,
-        name: &str,
+        name: N,
         relationship: R,
     ) -> Self {
         let relationships = self

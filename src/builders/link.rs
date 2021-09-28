@@ -7,9 +7,9 @@ pub struct LinkBuilder {
 }
 
 impl LinkBuilder {
-    pub fn new(href: &str) -> Self {
+    pub fn new<H: ToString>(href: H) -> Self {
         Self {
-            href: href.into(),
+            href: href.to_string(),
             meta: None,
         }
     }

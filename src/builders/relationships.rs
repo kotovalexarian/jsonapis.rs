@@ -34,13 +34,13 @@ impl From<Relationships> for RelationshipsBuilder {
 }
 
 impl RelationshipsBuilder {
-    pub fn rel<R: Into<RelationshipBuilder>>(
+    pub fn rel<N: ToString, R: Into<RelationshipBuilder>>(
         self,
-        name: &str,
+        name: N,
         relationship: R,
     ) -> Self {
         let mut relationships = self.0;
-        relationships.insert(name.into(), relationship.into());
+        relationships.insert(name.to_string(), relationship.into());
         Self(relationships)
     }
 }

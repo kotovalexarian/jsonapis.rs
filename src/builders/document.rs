@@ -96,7 +96,7 @@ impl DocumentBuilder {
         }
     }
 
-    pub fn meta1<V: Into<Value>>(self, name: &str, meta1: V) -> Self {
+    pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
         let meta = self
             .meta
             .unwrap_or(MetaOrAttrsBuilder::default())
@@ -108,7 +108,11 @@ impl DocumentBuilder {
         }
     }
 
-    pub fn link<L: Into<LinkBuilder>>(self, name: &str, link: L) -> Self {
+    pub fn link<N: ToString, L: Into<LinkBuilder>>(
+        self,
+        name: N,
+        link: L,
+    ) -> Self {
         let links = self
             .links
             .unwrap_or(LinksBuilder::default())
