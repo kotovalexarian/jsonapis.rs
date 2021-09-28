@@ -3,12 +3,13 @@ use super::*;
 use std::{fmt::Display, str::Utf8Error};
 
 use reqwest::{
+    blocking::{Client as ReqClient, RequestBuilder},
     header::{HeaderValue, ACCEPT, CONTENT_TYPE, LOCATION},
-    Client as ReqClient, Error as ReqError, RequestBuilder, StatusCode, Url,
-    UrlError,
+    Error as ReqError, StatusCode, Url,
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
+use url::ParseError;
 
 const MIME: &str = "application/vnd.api+json";
 const MIME_PREFIX: &str = "application/vnd.api+json;";
@@ -27,7 +28,7 @@ pub struct Response {
 #[derive(Debug)]
 pub enum Error {
     Response(Response),
-    URL(UrlError),
+    URL(ParseError),
     HTTP(ReqError),
     InvalidStatus(StatusCode),
     NoContentType,
@@ -108,11 +109,13 @@ impl Client {
     fn make_request<'a>(
         request_builder: RequestBuilder,
     ) -> std::result::Result<(StatusCode, Response), Error> {
-        let mut response = request_builder
+        let response = request_builder
             .header(ACCEPT, MIME)
             .header(CONTENT_TYPE, MIME)
             .send()
             .map_err(|error| Error::HTTP(error))?;
+
+        let status = response.status();
 
         let content_type = response
             .headers()
@@ -125,11 +128,6 @@ impl Client {
             return Err(Error::InvalidContentType(content_type.clone()));
         }
 
-        let json = response.text().map_err(|error| Error::Text(error))?;
-
-        let document =
-            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
-
         let location = match response.headers().get(LOCATION) {
             None => None,
             Some(header) => match std::str::from_utf8(header.as_bytes()) {
@@ -138,6 +136,11 @@ impl Client {
             },
         };
 
-        Ok((response.status(), Response { document, location }))
+        let json = response.text().map_err(|error| Error::Text(error))?;
+
+        let document =
+            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
+
+        Ok((status, Response { document, location }))
     }
 }
