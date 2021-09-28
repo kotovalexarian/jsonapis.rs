@@ -62,6 +62,7 @@ impl Client {
 
         // TODO: Implement status handling accorging to specification
         // https://jsonapi.org/format/#fetching-resources-responses
+        // https://jsonapi.org/format/#fetching-relationships-responses
         if status.is_success() {
             if status == StatusCode::OK {
                 Ok(Response { document })
