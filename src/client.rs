@@ -60,6 +60,8 @@ impl Client {
 
         let (status, document) = Self::make_request(ReqClient::new().get(url))?;
 
+        // TODO: Implement status handling accorging to specification
+        // https://jsonapi.org/format/#fetching-resources-responses
         if status.is_success() {
             if status == StatusCode::OK {
                 Ok(Response { document })
@@ -84,6 +86,11 @@ impl Client {
         let (status, document) =
             Self::make_request(ReqClient::new().post(url).json(document))?;
 
+        // TODO: Implement status handling accorging to specification
+        // https://jsonapi.org/format/#crud-creating-responses
+        // https://jsonapi.org/format/#crud-updating-responses
+        // https://jsonapi.org/format/#crud-updating-relationship-responses
+        // https://jsonapi.org/format/#crud-deleting-responses
         if status.is_success() {
             if status == StatusCode::CREATED {
                 Ok(Response { document })
