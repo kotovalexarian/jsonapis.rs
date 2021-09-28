@@ -3,7 +3,7 @@ use super::*;
 use std::fmt::Display;
 
 use reqwest::{
-    header::{ACCEPT, CONTENT_TYPE},
+    header::{HeaderValue, ACCEPT, CONTENT_TYPE},
     Client as ReqClient, Error as ReqError, Url, UrlError,
 };
 use serde::Serialize;
@@ -27,7 +27,8 @@ pub enum Error {
     Response(Response),
     URL(UrlError),
     HTTP(ReqError),
-    ContentType,
+    NoContentType,
+    InvalidContentType(HeaderValue),
     Text(ReqError),
     JSON(JsonError),
 }
@@ -65,12 +66,12 @@ impl Client {
         let content_type = response
             .headers()
             .get(CONTENT_TYPE)
-            .ok_or(Error::ContentType)?;
+            .ok_or(Error::NoContentType)?;
 
         if content_type != MIME
             && !content_type.as_bytes().starts_with(MIME_PREFIX.as_bytes())
         {
-            return Err(Error::ContentType);
+            return Err(Error::InvalidContentType(content_type.clone()));
         }
 
         let json = response.text().map_err(|error| Error::Text(error))?;
