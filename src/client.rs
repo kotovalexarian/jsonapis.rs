@@ -125,6 +125,11 @@ impl Client {
             return Err(Error::InvalidContentType(content_type.clone()));
         }
 
+        let json = response.text().map_err(|error| Error::Text(error))?;
+
+        let document =
+            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
+
         let location = match response.headers().get(LOCATION) {
             None => None,
             Some(header) => match std::str::from_utf8(header.as_bytes()) {
@@ -132,11 +137,6 @@ impl Client {
                 Ok(location) => Some(location.to_string()),
             },
         };
-
-        let json = response.text().map_err(|error| Error::Text(error))?;
-
-        let document =
-            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
 
         Ok((response.status(), Response { document, location }))
     }
