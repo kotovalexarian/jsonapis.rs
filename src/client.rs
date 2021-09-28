@@ -10,6 +10,7 @@ use serde::Serialize;
 use serde_json::Error as JsonError;
 
 const MIME: &str = "application/vnd.api+json";
+const MIME_PREFIX: &str = "application/vnd.api+json;";
 
 #[derive(Clone, Debug)]
 pub struct Client(String);
@@ -26,6 +27,7 @@ pub enum Error {
     Response(Response),
     URL(UrlError),
     HTTP(ReqError),
+    ContentType,
     Text(ReqError),
     JSON(JsonError),
 }
@@ -59,6 +61,17 @@ impl Client {
             .header(CONTENT_TYPE, MIME)
             .send()
             .map_err(|error| Error::HTTP(error))?;
+
+        let content_type = response
+            .headers()
+            .get(CONTENT_TYPE)
+            .ok_or(Error::ContentType)?;
+
+        if content_type != MIME
+            && !content_type.as_bytes().starts_with(MIME_PREFIX.as_bytes())
+        {
+            return Err(Error::ContentType);
+        }
 
         let json = response.text().map_err(|error| Error::Text(error))?;
 
