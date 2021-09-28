@@ -65,44 +65,6 @@ impl Builder for LinksBuilder {
     }
 }
 
-impl From<Links> for LinksBuilder {
-    fn from(links: Links) -> Self {
-        Self {
-            other: {
-                let mut other = HashMap::new();
-                for (key, value) in links.other {
-                    other.insert(key, value.into());
-                }
-                other
-            },
-            self_: match links.self_ {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            related: match links.related {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            first: match links.first {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            last: match links.last {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            prev: match links.prev {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-            next: match links.next {
-                None => None,
-                Some(link) => Some(link.into()),
-            },
-        }
-    }
-}
-
 impl LinksBuilder {
     pub fn self_<L: Into<LinkBuilder>>(self, self_: L) -> Self {
         Self {
@@ -199,6 +161,44 @@ impl LinksBuilder {
         other.insert(name, link.into());
 
         Self { other, ..self }
+    }
+}
+
+impl From<Links> for LinksBuilder {
+    fn from(links: Links) -> Self {
+        Self {
+            other: {
+                let mut other = HashMap::new();
+                for (key, value) in links.other {
+                    other.insert(key, value.into());
+                }
+                other
+            },
+            self_: match links.self_ {
+                None => None,
+                Some(link) => Some(link.into()),
+            },
+            related: match links.related {
+                None => None,
+                Some(link) => Some(link.into()),
+            },
+            first: match links.first {
+                None => None,
+                Some(link) => Some(link.into()),
+            },
+            last: match links.last {
+                None => None,
+                Some(link) => Some(link.into()),
+            },
+            prev: match links.prev {
+                None => None,
+                Some(link) => Some(link.into()),
+            },
+            next: match links.next {
+                None => None,
+                Some(link) => Some(link.into()),
+            },
+        }
     }
 }
 

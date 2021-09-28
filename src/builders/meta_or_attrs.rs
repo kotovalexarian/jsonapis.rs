@@ -17,16 +17,16 @@ impl Builder for MetaOrAttrsBuilder {
     }
 }
 
-impl From<MetaOrAttrs> for MetaOrAttrsBuilder {
-    fn from(meta_or_attrs: MetaOrAttrs) -> Self {
-        Self(meta_or_attrs)
-    }
-}
-
 impl MetaOrAttrsBuilder {
     pub fn item<N: ToString, V: Into<Value>>(self, name: N, value: V) -> Self {
         let mut meta_or_attrs = self.0;
         meta_or_attrs.insert(name.to_string(), value.into());
+        Self(meta_or_attrs)
+    }
+}
+
+impl From<MetaOrAttrs> for MetaOrAttrsBuilder {
+    fn from(meta_or_attrs: MetaOrAttrs) -> Self {
         Self(meta_or_attrs)
     }
 }

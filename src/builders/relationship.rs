@@ -38,31 +38,6 @@ impl Builder for RelationshipBuilder {
     }
 }
 
-impl From<Relationship> for RelationshipBuilder {
-    fn from(relationship: Relationship) -> Self {
-        Self {
-            meta: match relationship.meta {
-                None => None,
-                Some(meta) => Some(meta.into()),
-            },
-            links: match relationship.links {
-                None => None,
-                Some(links) => Some(links.into()),
-            },
-            data: match relationship.data {
-                None => None,
-                Some(data) => Some(data.into()),
-            },
-        }
-    }
-}
-
-impl<R: Into<ResourceBuilder>> From<R> for RelationshipBuilder {
-    fn from(resource: R) -> Self {
-        Self::default().data(resource.into())
-    }
-}
-
 impl RelationshipBuilder {
     pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
         Self {
@@ -111,6 +86,31 @@ impl RelationshipBuilder {
             links: Some(links),
             ..self
         }
+    }
+}
+
+impl From<Relationship> for RelationshipBuilder {
+    fn from(relationship: Relationship) -> Self {
+        Self {
+            meta: match relationship.meta {
+                None => None,
+                Some(meta) => Some(meta.into()),
+            },
+            links: match relationship.links {
+                None => None,
+                Some(links) => Some(links.into()),
+            },
+            data: match relationship.data {
+                None => None,
+                Some(data) => Some(data.into()),
+            },
+        }
+    }
+}
+
+impl<R: Into<ResourceBuilder>> From<R> for RelationshipBuilder {
+    fn from(resource: R) -> Self {
+        Self::default().data(resource.into())
     }
 }
 

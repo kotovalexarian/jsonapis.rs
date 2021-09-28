@@ -29,6 +29,22 @@ impl Builder for JsonApiBuilder {
     }
 }
 
+impl JsonApiBuilder {
+    pub fn version(self, version: Version) -> Self {
+        Self {
+            version: Some(version),
+            ..self
+        }
+    }
+
+    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
+        Self {
+            meta: Some(meta.into()),
+            ..self
+        }
+    }
+}
+
 impl From<JsonApi> for JsonApiBuilder {
     fn from(jsonapi: JsonApi) -> Self {
         Self {
@@ -46,22 +62,6 @@ impl From<Version> for JsonApiBuilder {
         Self {
             version: Some(version),
             meta: None,
-        }
-    }
-}
-
-impl JsonApiBuilder {
-    pub fn version(self, version: Version) -> Self {
-        Self {
-            version: Some(version),
-            ..self
-        }
-    }
-
-    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
-        Self {
-            meta: Some(meta.into()),
-            ..self
         }
     }
 }

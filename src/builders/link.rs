@@ -29,6 +29,15 @@ impl Builder for LinkBuilder {
     }
 }
 
+impl LinkBuilder {
+    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
+        Self {
+            meta: Some(meta.into()),
+            ..self
+        }
+    }
+}
+
 impl From<Link> for LinkBuilder {
     fn from(link: Link) -> Self {
         match link {
@@ -52,15 +61,6 @@ impl<S: ToString> From<S> for LinkBuilder {
         Self {
             href: s.to_string(),
             meta: None,
-        }
-    }
-}
-
-impl LinkBuilder {
-    pub fn meta<M: Into<MetaOrAttrsBuilder>>(self, meta: M) -> Self {
-        Self {
-            meta: Some(meta.into()),
-            ..self
         }
     }
 }

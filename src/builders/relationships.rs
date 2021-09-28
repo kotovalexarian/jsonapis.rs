@@ -23,16 +23,6 @@ impl Builder for RelationshipsBuilder {
     }
 }
 
-impl From<Relationships> for RelationshipsBuilder {
-    fn from(relationships: Relationships) -> Self {
-        let mut new_relationships = HashMap::new();
-        for (key, value) in relationships {
-            new_relationships.insert(key, value.into());
-        }
-        Self(new_relationships)
-    }
-}
-
 impl RelationshipsBuilder {
     pub fn rel<N: ToString, R: Into<RelationshipBuilder>>(
         self,
@@ -42,6 +32,16 @@ impl RelationshipsBuilder {
         let mut relationships = self.0;
         relationships.insert(name.to_string(), relationship.into());
         Self(relationships)
+    }
+}
+
+impl From<Relationships> for RelationshipsBuilder {
+    fn from(relationships: Relationships) -> Self {
+        let mut new_relationships = HashMap::new();
+        for (key, value) in relationships {
+            new_relationships.insert(key, value.into());
+        }
+        Self(new_relationships)
     }
 }
 

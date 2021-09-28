@@ -44,29 +44,6 @@ impl Builder for DocumentBuilder {
     }
 }
 
-impl From<Document> for DocumentBuilder {
-    fn from(document: Document) -> Self {
-        Self {
-            jsonapi: match document.jsonapi {
-                None => None,
-                Some(jsonapi) => Some(jsonapi.into()),
-            },
-            meta: match document.meta {
-                None => None,
-                Some(meta) => Some(meta.into()),
-            },
-            links: match document.links {
-                None => None,
-                Some(links) => Some(links.into()),
-            },
-            data: match document.data {
-                None => None,
-                Some(data) => Some(data.into()),
-            },
-        }
-    }
-}
-
 impl DocumentBuilder {
     pub fn jsonapi<J: Into<JsonApiBuilder>>(self, jsonapi: J) -> Self {
         Self {
@@ -121,6 +98,29 @@ impl DocumentBuilder {
         Self {
             links: Some(links),
             ..self
+        }
+    }
+}
+
+impl From<Document> for DocumentBuilder {
+    fn from(document: Document) -> Self {
+        Self {
+            jsonapi: match document.jsonapi {
+                None => None,
+                Some(jsonapi) => Some(jsonapi.into()),
+            },
+            meta: match document.meta {
+                None => None,
+                Some(meta) => Some(meta.into()),
+            },
+            links: match document.links {
+                None => None,
+                Some(links) => Some(links.into()),
+            },
+            data: match document.data {
+                None => None,
+                Some(data) => Some(data.into()),
+            },
         }
     }
 }
