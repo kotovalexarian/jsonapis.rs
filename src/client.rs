@@ -1,9 +1,9 @@
 use super::*;
 
-use std::fmt::Display;
+use std::{fmt::Display, str::Utf8Error};
 
 use reqwest::{
-    header::{HeaderValue, ACCEPT, CONTENT_TYPE},
+    header::{HeaderValue, ACCEPT, CONTENT_TYPE, LOCATION},
     Client as ReqClient, Error as ReqError, RequestBuilder, StatusCode, Url,
     UrlError,
 };
@@ -21,6 +21,7 @@ pub type Result = std::result::Result<Response, Error>;
 #[derive(Clone, Debug, Serialize)]
 pub struct Response {
     document: Document,
+    location: Option<String>,
 }
 
 #[derive(Debug)]
@@ -31,6 +32,7 @@ pub enum Error {
     InvalidStatus(StatusCode),
     NoContentType,
     InvalidContentType(HeaderValue),
+    InvalidLocationUtf8(Utf8Error),
     Text(ReqError),
     JSON(JsonError),
 }
@@ -58,19 +60,20 @@ impl Client {
             Url::parse_with_params(&format!("{}{}.json", self.0, path), params)
                 .map_err(|error| Error::URL(error))?;
 
-        let (status, document) = Self::make_request(ReqClient::new().get(url))?;
+        let (status, location, document) =
+            Self::make_request(ReqClient::new().get(url))?;
 
         // TODO: Implement status handling accorging to specification
         // https://jsonapi.org/format/#fetching-resources-responses
         // https://jsonapi.org/format/#fetching-relationships-responses
         if status.is_success() {
             if status == StatusCode::OK {
-                Ok(Response { document })
+                Ok(Response { document, location })
             } else {
                 Err(Error::InvalidStatus(status))
             }
         } else {
-            Err(Error::Response(Response { document }))
+            Err(Error::Response(Response { document, location }))
         }
     }
 
@@ -84,7 +87,7 @@ impl Client {
 
         let document: &Document = document.into();
 
-        let (status, document) =
+        let (status, location, document) =
             Self::make_request(ReqClient::new().post(url).json(document))?;
 
         // TODO: Implement status handling accorging to specification
@@ -94,18 +97,19 @@ impl Client {
         // https://jsonapi.org/format/#crud-deleting-responses
         if status.is_success() {
             if status == StatusCode::CREATED {
-                Ok(Response { document })
+                Ok(Response { document, location })
             } else {
                 Err(Error::InvalidStatus(status))
             }
         } else {
-            Err(Error::Response(Response { document }))
+            Err(Error::Response(Response { document, location }))
         }
     }
 
-    fn make_request(
+    fn make_request<'a>(
         request_builder: RequestBuilder,
-    ) -> std::result::Result<(StatusCode, Document), Error> {
+    ) -> std::result::Result<(StatusCode, Option<String>, Document), Error>
+    {
         let mut response = request_builder
             .header(ACCEPT, MIME)
             .header(CONTENT_TYPE, MIME)
@@ -123,11 +127,19 @@ impl Client {
             return Err(Error::InvalidContentType(content_type.clone()));
         }
 
+        let location = match response.headers().get(LOCATION) {
+            None => None,
+            Some(header) => match std::str::from_utf8(header.as_bytes()) {
+                Err(error) => return Err(Error::InvalidLocationUtf8(error)),
+                Ok(location) => Some(location.to_string()),
+            },
+        };
+
         let json = response.text().map_err(|error| Error::Text(error))?;
 
         let document =
             serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
 
-        Ok((response.status(), document))
+        Ok((response.status(), location, document))
     }
 }
