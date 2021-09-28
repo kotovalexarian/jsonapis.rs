@@ -8,6 +8,4 @@ env:
 
 install: cargo build --verbose $FEATURES
 
-script:
-  - cargo build --verbose $FEATURES
-  - cargo test --verbose $FEATURES
+script: cargo test --verbose $FEATURES
