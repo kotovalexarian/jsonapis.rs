@@ -8,19 +8,6 @@ env:
 
 install: cargo build --verbose $FEATURES
 
-script: cargo test --verbose $FEATURES
-
-jobs:
-  include:
-    - rust: stable
-      env: FEATURES=''
-    - rust: beta
-      env: FEATURES=''
-    - rust: nightly
-      env: FEATURES=''
-    - rust: stable
-      env: FEATURES='--no-default-features'
-    - rust: beta
-      env: FEATURES='--no-default-features'
-    - rust: nightly
-      env: FEATURES='--no-default-features'
+script:
+  - cargo build --verbose $FEATURES
+  - cargo test --verbose $FEATURES
