@@ -104,10 +104,7 @@ impl ResourceBuilder {
     }
 
     pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
-        let meta = self
-            .meta
-            .unwrap_or_default()
-            .item(name, meta1);
+        let meta = self.meta.unwrap_or_default().item(name, meta1);
 
         Self {
             meta: Some(meta),
@@ -120,10 +117,7 @@ impl ResourceBuilder {
         name: N,
         link: L,
     ) -> Self {
-        let links = self
-            .links
-            .unwrap_or_default()
-            .link(name, link);
+        let links = self.links.unwrap_or_default().link(name, link);
 
         Self {
             links: Some(links),
@@ -136,10 +130,8 @@ impl ResourceBuilder {
         name: N,
         attribute: V,
     ) -> Self {
-        let attributes = self
-            .attributes
-            .unwrap_or_default()
-            .item(name, attribute);
+        let attributes =
+            self.attributes.unwrap_or_default().item(name, attribute);
 
         Self {
             attributes: Some(attributes),
@@ -172,7 +164,9 @@ impl From<Resource> for ResourceBuilder {
             meta: resource.meta.map(|meta| meta.into()),
             links: resource.links.map(|links| links.into()),
             attributes: resource.attributes.map(|attributes| attributes.into()),
-            relationships: resource.relationships.map(|relationships| relationships.into()),
+            relationships: resource
+                .relationships
+                .map(|relationships| relationships.into()),
         }
     }
 }

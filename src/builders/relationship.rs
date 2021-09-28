@@ -51,10 +51,7 @@ impl RelationshipBuilder {
     }
 
     pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
-        let meta = self
-            .meta
-            .unwrap_or_default()
-            .item(name, meta1);
+        let meta = self.meta.unwrap_or_default().item(name, meta1);
 
         Self {
             meta: Some(meta),
@@ -67,10 +64,7 @@ impl RelationshipBuilder {
         name: N,
         link: L,
     ) -> Self {
-        let links = self
-            .links
-            .unwrap_or_default()
-            .link(name, link);
+        let links = self.links.unwrap_or_default().link(name, link);
 
         Self {
             links: Some(links),
