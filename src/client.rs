@@ -109,6 +109,10 @@ impl Client {
             .send()
             .map_err(|error| Error::HTTP(error))?;
 
+        if response.status() != StatusCode::CREATED {
+            return Err(Error::InvalidStatus(response.status()));
+        }
+
         let content_type = response
             .headers()
             .get(CONTENT_TYPE)
