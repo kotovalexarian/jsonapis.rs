@@ -6,6 +6,9 @@ env:
   - FEATURES=''
   - FEATURES='--no-default-features'
 
-install: cargo build --verbose $FEATURES
+install: cargo build --verbose --all-targets $FEATURES
 
-script: cargo test --verbose $FEATURES
+script:
+  - cargo test --verbose $FEATURES
+  - cargo run --verbose $FEATURES --example builders
+  - cargo run --verbose $FEATURES --example client
