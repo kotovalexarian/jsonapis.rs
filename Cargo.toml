@@ -2,7 +2,7 @@
 name = "jsonapis"
 version = "0.0.4"
 authors = ["Alex Kotov <kotovalexarian@gmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "JSON:API library for Rust"
 readme = true
 homepage = "https://github.com/kotovalexarian/jsonapis.rs"
