@@ -1,11 +1,12 @@
-/*
- * This example uses fake JSON:API
- * https://jsonapiplayground.reyesoft.com
- */
-
+#[cfg(feature = "client")]
 use jsonapis::{Client, Document, Response};
 
+#[cfg(not(feature = "client"))]
+fn main() {}
+
+#[cfg(feature = "client")]
 fn main() {
+    // This example uses fake JSON:API
     let client = Client::new("https://jsonapiplayground.reyesoft.com/v2");
 
     let response: Response = client
