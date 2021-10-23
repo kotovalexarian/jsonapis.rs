@@ -15,7 +15,10 @@ const MIME: &str = "application/vnd.api+json";
 const MIME_PREFIX: &str = "application/vnd.api+json;";
 
 #[derive(Clone, Debug)]
-pub struct Client(String);
+pub struct Client {
+    url: String,
+    add_json_ext: bool,
+}
 
 pub type Result = std::result::Result<Response, Error>;
 
@@ -46,7 +49,17 @@ impl Response {
 
 impl Client {
     pub fn new<U: Into<String>>(url: U) -> Self {
-        Self(url.into())
+        Self {
+            url: url.into(),
+            add_json_ext: false,
+        }
+    }
+
+    pub fn add_json_ext(self, add_json_ext: bool) -> Self {
+        Self {
+            add_json_ext,
+            ..self
+        }
     }
 
     pub fn get<P, I, K, V>(&self, path: P, params: I) -> Result
@@ -57,9 +70,7 @@ impl Client {
         V: AsRef<str>,
         <I as IntoIterator>::Item: std::borrow::Borrow<(K, V)>,
     {
-        let url =
-            Url::parse_with_params(&format!("{}{}.json", self.0, path), params)
-                .map_err(|error| Error::URL(error))?;
+        let url = self.url_for_get(path, params).map_err(Error::URL)?;
 
         let (status, response) = Self::make_request(ReqClient::new().get(url))?;
 
@@ -82,8 +93,7 @@ impl Client {
         P: Display,
         D: Into<&'d Document>,
     {
-        let url = Url::parse(&format!("{}{}.json", self.0, path))
-            .map_err(|error| Error::URL(error))?;
+        let url = self.url_for_post(path).map_err(Error::URL)?;
 
         let document: &Document = document.into();
 
@@ -106,14 +116,47 @@ impl Client {
         }
     }
 
-    fn make_request<'a>(
+    fn url_for_get<P, I, K, V>(
+        &self,
+        path: P,
+        params: I,
+    ) -> std::result::Result<Url, ParseError>
+    where
+        P: Display,
+        I: IntoIterator,
+        K: AsRef<str>,
+        V: AsRef<str>,
+        <I as IntoIterator>::Item: std::borrow::Borrow<(K, V)>,
+    {
+        Url::parse_with_params(
+            &if self.add_json_ext {
+                format!("{}{}.json", self.url, path)
+            } else {
+                format!("{}{}", self.url, path)
+            },
+            params,
+        )
+    }
+
+    fn url_for_post<P>(&self, path: P) -> std::result::Result<Url, ParseError>
+    where
+        P: Display,
+    {
+        Url::parse(&if self.add_json_ext {
+            format!("{}{}.json", self.url, path)
+        } else {
+            format!("{}{}", self.url, path)
+        })
+    }
+
+    fn make_request(
         request_builder: RequestBuilder,
     ) -> std::result::Result<(StatusCode, Response), Error> {
         let response = request_builder
             .header(ACCEPT, MIME)
             .header(CONTENT_TYPE, MIME)
             .send()
-            .map_err(|error| Error::HTTP(error))?;
+            .map_err(Error::HTTP)?;
 
         let status = response.status();
 
@@ -136,10 +179,9 @@ impl Client {
             },
         };
 
-        let json = response.text().map_err(|error| Error::Text(error))?;
+        let json = response.text().map_err(Error::Text)?;
 
-        let document =
-            serde_json::from_str(&json).map_err(|error| Error::JSON(error))?;
+        let document = serde_json::from_str(&json).map_err(Error::JSON)?;
 
         Ok((status, Response { document, location }))
     }

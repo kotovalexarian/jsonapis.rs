@@ -1,9 +1,9 @@
 mod builders;
-#[cfg(client)]
+#[cfg(feature = "client")]
 mod client;
 mod entities;
 
 pub use builders::*;
-#[cfg(client)]
+#[cfg(feature = "client")]
 pub use client::*;
 pub use entities::*;
