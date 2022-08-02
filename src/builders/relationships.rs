@@ -3,7 +3,7 @@ use super::*;
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct RelationshipsBuilder(HashMap<String, RelationshipBuilder>);
 
-impl Builder for RelationshipsBuilder {
+impl Builder<'_> for RelationshipsBuilder {
     type Entity = Relationships;
 
     fn finish(self) -> Result<Self::Entity, ()> {

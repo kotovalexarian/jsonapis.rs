@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for Version {}
+impl Entity<'_> for Version {}
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct Version {

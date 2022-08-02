@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for Document {}
+impl Entity<'_> for Document {}
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Document {

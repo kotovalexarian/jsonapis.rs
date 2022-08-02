@@ -2,7 +2,7 @@ use super::*;
 
 use http::StatusCode;
 
-impl Entity for HttpStatus {}
+impl Entity<'_> for HttpStatus {}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HttpStatus(pub StatusCode);

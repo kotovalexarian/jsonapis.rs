@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for Link {}
+impl Entity<'_> for Link {}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Link {

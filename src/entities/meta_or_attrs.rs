@@ -1,5 +1,5 @@
 use super::*;
 
-impl Entity for MetaOrAttrs {}
+impl Entity<'_> for MetaOrAttrs {}
 
 pub type MetaOrAttrs = HashMap<String, Value>;

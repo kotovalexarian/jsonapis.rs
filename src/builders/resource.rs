@@ -34,7 +34,7 @@ impl ResourceBuilder {
     }
 }
 
-impl Builder for ResourceBuilder {
+impl Builder<'_> for ResourceBuilder {
     type Entity = Resource;
 
     fn finish(self) -> Result<Self::Entity, ()> {

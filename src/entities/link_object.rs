@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for LinkObject {}
+impl Entity<'_> for LinkObject {}
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct LinkObject {

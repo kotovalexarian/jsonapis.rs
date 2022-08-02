@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for JsonApi {}
+impl Entity<'_> for JsonApi {}
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct JsonApi {

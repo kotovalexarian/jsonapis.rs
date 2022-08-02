@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for Links {}
+impl Entity<'_> for Links {}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Links {

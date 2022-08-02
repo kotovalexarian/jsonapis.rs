@@ -6,7 +6,7 @@ pub struct JsonApiBuilder {
     meta: Option<MetaOrAttrsBuilder>,
 }
 
-impl Builder for JsonApiBuilder {
+impl Builder<'_> for JsonApiBuilder {
     type Entity = JsonApi;
 
     fn finish(self) -> Result<Self::Entity, ()> {

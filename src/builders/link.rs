@@ -15,7 +15,7 @@ impl LinkBuilder {
     }
 }
 
-impl Builder for LinkBuilder {
+impl Builder<'_> for LinkBuilder {
     type Entity = Link;
 
     fn finish(self) -> Result<Self::Entity, ()> {

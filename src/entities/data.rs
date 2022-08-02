@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for Data {}
+impl Entity<'_> for Data {}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Data {

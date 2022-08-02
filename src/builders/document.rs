@@ -8,7 +8,7 @@ pub struct DocumentBuilder {
     data: Option<DataBuilder>,
 }
 
-impl Builder for DocumentBuilder {
+impl Builder<'_> for DocumentBuilder {
     type Entity = Document;
 
     fn finish(self) -> Result<Self::Entity, ()> {

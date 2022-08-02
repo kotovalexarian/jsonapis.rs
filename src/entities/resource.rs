@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for Resource {}
+impl Entity<'_> for Resource {}
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Resource {

@@ -7,7 +7,7 @@ pub struct RelationshipBuilder {
     data: Option<DataBuilder>,
 }
 
-impl Builder for RelationshipBuilder {
+impl Builder<'_> for RelationshipBuilder {
     type Entity = Relationship;
 
     fn finish(self) -> Result<Self::Entity, ()> {

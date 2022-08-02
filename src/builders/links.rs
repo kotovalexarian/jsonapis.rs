@@ -15,7 +15,7 @@ pub struct LinksBuilder {
     pub about: Option<LinkBuilder>,
 }
 
-impl Builder for LinksBuilder {
+impl Builder<'_> for LinksBuilder {
     type Entity = Links;
 
     fn finish(self) -> Result<Self::Entity, ()> {

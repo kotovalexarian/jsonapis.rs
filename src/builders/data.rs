@@ -6,7 +6,7 @@ pub enum DataBuilder {
     Multiple(Vec<ResourceBuilder>),
 }
 
-impl Builder for DataBuilder {
+impl Builder<'_> for DataBuilder {
     type Entity = Data;
 
     fn finish(self) -> Result<Self::Entity, ()> {

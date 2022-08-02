@@ -1,6 +1,6 @@
 use super::*;
 
-impl Entity for Relationship {}
+impl Entity<'_> for Relationship {}
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Relationship {

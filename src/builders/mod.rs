@@ -25,8 +25,8 @@ use std::fmt::Debug;
 
 use serde_json::Value;
 
-pub trait Builder: Clone + Debug + Eq + PartialEq + Sized {
-    type Entity: Entity;
+pub trait Builder<'de>: Clone + Debug + Eq + PartialEq + Sized {
+    type Entity: Entity<'de>;
 
     fn finish(self) -> Result<Self::Entity, ()>;
 

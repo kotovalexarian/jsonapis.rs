@@ -3,7 +3,7 @@ use super::*;
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct MetaOrAttrsBuilder(MetaOrAttrs);
 
-impl Builder for MetaOrAttrsBuilder {
+impl Builder<'_> for MetaOrAttrsBuilder {
     type Entity = MetaOrAttrs;
 
     fn finish(self) -> Result<Self::Entity, ()> {
