@@ -102,22 +102,6 @@ mod tests {
         })
     }
 
-    fn expected_errors() -> Vec<Error> {
-        vec![Error {
-            id: Some("789".into()),
-            links: Some(fixtures::different_links()),
-            status: Some(HttpStatus(http::StatusCode::OK)),
-            code: Some("some code".into()),
-            title: Some("some title".into()),
-            detail: Some("some detail".into()),
-            source: Some(ErrorSource {
-                pointer: Some("/foo/0/bar/1".into()),
-                parameter: Some("car".into()),
-            }),
-            meta: Some(fixtures::meta_or_attrs()),
-        }]
-    }
-
     #[test]
     fn serialize_and_deserialize() {
         let document = Document {
@@ -135,7 +119,7 @@ mod tests {
                 attributes: Some(fixtures::meta_or_attrs()),
                 relationships: Some(expected_relationships()),
             }])),
-            errors: Some(expected_errors()),
+            errors: Some(fixtures::full_errors()),
         };
 
         let serialized = serde_json::to_string(&document).unwrap();
@@ -330,7 +314,7 @@ mod tests {
                     attributes: Some(fixtures::meta_or_attrs()),
                     relationships: Some(expected_relationships()),
                 }])),
-                errors: Some(expected_errors()),
+                errors: Some(fixtures::full_errors()),
             };
 
             let json = serde_json::to_string(&document).unwrap();
@@ -356,21 +340,7 @@ mod tests {
                             "relationships": expected_relationships_value(),
                         }),
                     ]),
-                    "errors": json!([
-                        json!({
-                            "id": json!("789"),
-                            "links": fixtures::different_links_value(),
-                            "status": Some(HttpStatus(http::StatusCode::OK)),
-                            "code": json!("some code"),
-                            "title": json!("some title"),
-                            "detail": json!("some detail"),
-                            "source": json!({
-                                "pointer": json!("/foo/0/bar/1"),
-                                "parameter": json!("car"),
-                            }),
-                            "meta": fixtures::meta_or_attrs_value(),
-                        }),
-                    ]),
+                    "errors": fixtures::full_errors_value(),
                 })
             );
         }

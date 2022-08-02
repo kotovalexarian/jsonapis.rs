@@ -1,4 +1,5 @@
 use super::*;
+use crate::entities::Error;
 
 use std::collections::HashMap;
 
@@ -100,5 +101,51 @@ pub fn different_links_value() -> Value {
             "meta": meta_or_attrs_value(),
         }),
         "about": json!(null),
+    })
+}
+
+/*******************
+ * full_error[s]   *
+ *                 *
+ * With all fields *
+ *******************/
+
+pub fn full_errors() -> Vec<Error> {
+    vec![full_error()]
+}
+
+pub fn full_errors_value() -> Value {
+    json!([full_error_value()])
+}
+
+pub fn full_error() -> Error {
+    Error {
+        id: Some("789".into()),
+        links: Some(different_links()),
+        status: Some(HttpStatus(http::StatusCode::OK)),
+        code: Some("some code".into()),
+        title: Some("some title".into()),
+        detail: Some("some detail".into()),
+        source: Some(ErrorSource {
+            pointer: Some("/foo/0/bar/1".into()),
+            parameter: Some("car".into()),
+        }),
+        meta: Some(meta_or_attrs()),
+    }
+}
+
+pub fn full_error_value() -> Value {
+    json!({
+        "id": json!("789"),
+        "links": different_links_value(),
+        "status": Some(HttpStatus(http::StatusCode::OK)),
+        "code": json!("some code"),
+        "title": json!("some title"),
+        "detail": json!("some detail"),
+        "source": json!({
+            "pointer": json!("/foo/0/bar/1"),
+            "parameter": json!("car"),
+        }),
+        "meta": meta_or_attrs_value(),
     })
 }
