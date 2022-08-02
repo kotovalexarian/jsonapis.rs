@@ -54,6 +54,7 @@ fn main() {
             "last": json!("http://example.com/posts.json?page=3"),
             "prev": json!(null),
             "next": json!("http://example.com/posts.json?page=2"),
+            "about": json!(null),
         }),
         "data": json!([
             json!({
@@ -67,6 +68,7 @@ fn main() {
                     "last": json!(null),
                     "prev": json!(null),
                     "next": json!(null),
+                    "about": json!(null),
                 }),
                 "attributes": json!({
                     "title": json!("Some blog post"),
@@ -87,6 +89,7 @@ fn main() {
                                 "last": json!(null),
                                 "prev": json!(null),
                                 "next": json!(null),
+                                "about": json!(null),
                             }),
                             "attributes": json!({
                                 "username": json!("alice"),
@@ -107,6 +110,7 @@ fn main() {
                     "last": json!(null),
                     "prev": json!(null),
                     "next": json!(null),
+                    "about": json!(null),
                 }),
                 "attributes": json!({
                     "title": json!("Other blog post"),
@@ -127,6 +131,7 @@ fn main() {
                                 "last": json!(null),
                                 "prev": json!(null),
                                 "next": json!(null),
+                                "about": json!(null),
                             }),
                             "attributes": json!({
                                 "username": json!("bob"),
