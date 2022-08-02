@@ -52,55 +52,6 @@ mod tests {
 
     use serde_json::json;
 
-    fn expected_links() -> Links {
-        let mut expected_links: Links = Links {
-            other: HashMap::new(),
-            self_: Some(Link::String("http://example.com".into())),
-            related: None,
-            first: None,
-            last: None,
-            prev: None,
-            next: Some(Link::Object(LinkObject {
-                href: "http://example.com".into(),
-                meta: Some(fixtures::meta_or_attrs()),
-            })),
-            about: None,
-        };
-
-        expected_links
-            .other
-            .insert("foo".into(), Link::String("http://foo.com".into()));
-        expected_links.other.insert(
-            "bar".into(),
-            Link::Object(LinkObject {
-                href: "http://bar.com".into(),
-                meta: Some(fixtures::meta_or_attrs()),
-            }),
-        );
-
-        expected_links
-    }
-
-    fn expected_links_value() -> Value {
-        json!({
-            "self": json!("http://example.com"),
-            "related": json!(null),
-            "first": json!(null),
-            "last": json!(null),
-            "prev": json!(null),
-            "next": json!({
-                "href": json!("http://example.com"),
-                "meta": fixtures::meta_or_attrs_value(),
-            }),
-            "foo": json!("http://foo.com"),
-            "bar": json!({
-                "href": json!("http://bar.com"),
-                "meta": fixtures::meta_or_attrs_value(),
-            }),
-            "about": json!(null),
-        })
-    }
-
     fn expected_relationships() -> Relationships {
         let mut expected_relationships: Relationships = Relationships::new();
         expected_relationships.insert(
@@ -115,12 +66,12 @@ mod tests {
             "cdr".into(),
             Relationship {
                 meta: Some(fixtures::meta_or_attrs()),
-                links: Some(expected_links()),
+                links: Some(fixtures::different_links()),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),
                     id: Some("123".into()),
                     meta: Some(fixtures::meta_or_attrs()),
-                    links: Some(expected_links()),
+                    links: Some(fixtures::different_links()),
                     attributes: Some(fixtures::meta_or_attrs()),
                     relationships: None,
                 })),
@@ -138,12 +89,12 @@ mod tests {
             }),
             "cdr": json!({
                 "meta": fixtures::meta_or_attrs_value(),
-                "links": expected_links_value(),
+                "links": fixtures::different_links_value(),
                 "data": json!({
                     "type": json!("qwerties"),
                     "id": json!("123"),
                     "meta": fixtures::meta_or_attrs_value(),
-                    "links": expected_links_value(),
+                    "links": fixtures::different_links_value(),
                     "attributes": fixtures::meta_or_attrs_value(),
                     "relationships": json!(null),
                 }),
@@ -154,7 +105,7 @@ mod tests {
     fn expected_errors() -> Vec<Error> {
         vec![Error {
             id: Some("789".into()),
-            links: Some(expected_links()),
+            links: Some(fixtures::different_links()),
             status: Some(HttpStatus(http::StatusCode::OK)),
             code: Some("some code".into()),
             title: Some("some title".into()),
@@ -175,12 +126,12 @@ mod tests {
                 meta: Some(fixtures::meta_or_attrs()),
             }),
             meta: Some(fixtures::meta_or_attrs()),
-            links: Some(expected_links()),
+            links: Some(fixtures::different_links()),
             data: Some(Data::Multiple(vec![Resource {
                 type_: "qwerties".into(),
                 id: Some("123".into()),
                 meta: Some(fixtures::meta_or_attrs()),
-                links: Some(expected_links()),
+                links: Some(fixtures::different_links()),
                 attributes: Some(fixtures::meta_or_attrs()),
                 relationships: Some(expected_relationships()),
             }])),
@@ -205,7 +156,7 @@ mod tests {
                     meta: Some(fixtures::meta_or_attrs()),
                 }),
                 meta: Some(fixtures::meta_or_attrs()),
-                links: Some(expected_links()),
+                links: Some(fixtures::different_links()),
                 data: None,
                 errors: None,
             };
@@ -216,7 +167,7 @@ mod tests {
                     "meta": fixtures::meta_or_attrs_value(),
                 }),
                 "meta": fixtures::meta_or_attrs_value(),
-                "links": expected_links_value(),
+                "links": fixtures::different_links_value(),
             });
 
             let json = serde_json::to_string(&value).unwrap();
@@ -270,7 +221,7 @@ mod tests {
                     type_: "qwerties".into(),
                     id: Some("123".into()),
                     meta: Some(fixtures::meta_or_attrs()),
-                    links: Some(expected_links()),
+                    links: Some(fixtures::different_links()),
                     attributes: Some(fixtures::meta_or_attrs()),
                     relationships: Some(expected_relationships()),
                 })),
@@ -282,7 +233,7 @@ mod tests {
                     "type": json!("qwerties"),
                     "id": json!("123"),
                     "meta": fixtures::meta_or_attrs_value(),
-                    "links": expected_links_value(),
+                    "links": fixtures::different_links_value(),
                     "attributes": fixtures::meta_or_attrs_value(),
                     "relationships": expected_relationships_value(),
                 }),
@@ -305,7 +256,7 @@ mod tests {
                     type_: "qwerties".into(),
                     id: Some("123".into()),
                     meta: Some(fixtures::meta_or_attrs()),
-                    links: Some(expected_links()),
+                    links: Some(fixtures::different_links()),
                     attributes: Some(fixtures::meta_or_attrs()),
                     relationships: Some(expected_relationships()),
                 }])),
@@ -318,7 +269,7 @@ mod tests {
                         "type": json!("qwerties"),
                         "id": json!("123"),
                         "meta": fixtures::meta_or_attrs_value(),
-                        "links": expected_links_value(),
+                        "links": fixtures::different_links_value(),
                         "attributes": fixtures::meta_or_attrs_value(),
                         "relationships": expected_relationships_value(),
                     }),
@@ -370,12 +321,12 @@ mod tests {
                     meta: Some(fixtures::meta_or_attrs()),
                 }),
                 meta: Some(fixtures::meta_or_attrs()),
-                links: Some(expected_links()),
+                links: Some(fixtures::different_links()),
                 data: Some(Data::Multiple(vec![Resource {
                     type_: "qwerties".into(),
                     id: Some("123".into()),
                     meta: Some(fixtures::meta_or_attrs()),
-                    links: Some(expected_links()),
+                    links: Some(fixtures::different_links()),
                     attributes: Some(fixtures::meta_or_attrs()),
                     relationships: Some(expected_relationships()),
                 }])),
@@ -394,13 +345,13 @@ mod tests {
                         "meta": fixtures::meta_or_attrs_value(),
                     }),
                     "meta": fixtures::meta_or_attrs_value(),
-                    "links": expected_links_value(),
+                    "links": fixtures::different_links_value(),
                     "data": json!([
                         json!({
                             "type": json!("qwerties"),
                             "id": json!("123"),
                             "meta": fixtures::meta_or_attrs_value(),
-                            "links": expected_links_value(),
+                            "links": fixtures::different_links_value(),
                             "attributes": fixtures::meta_or_attrs_value(),
                             "relationships": expected_relationships_value(),
                         }),
@@ -408,7 +359,7 @@ mod tests {
                     "errors": json!([
                         json!({
                             "id": json!("789"),
-                            "links": expected_links_value(),
+                            "links": fixtures::different_links_value(),
                             "status": Some(HttpStatus(http::StatusCode::OK)),
                             "code": json!("some code"),
                             "title": json!("some title"),
