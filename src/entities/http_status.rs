@@ -5,7 +5,7 @@ use http::StatusCode;
 impl Entity<'_> for HttpStatus {}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct HttpStatus(pub StatusCode);
+pub struct HttpStatus(StatusCode);
 
 impl Serialize for HttpStatus {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -45,6 +45,12 @@ impl<'de> Deserialize<'de> for HttpStatus {
         }
 
         deserializer.deserialize_any(MyVisitor)
+    }
+}
+
+impl From<StatusCode> for HttpStatus {
+    fn from(status_code: StatusCode) -> Self {
+        Self(status_code)
     }
 }
 

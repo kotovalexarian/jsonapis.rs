@@ -183,7 +183,7 @@ mod tests {
                         .self_(LinkBuilder::new("http://self.com"))
                         .link("qwe", LinkBuilder::new("http://qwe.com")),
                 )
-                .status(HttpStatus(http::StatusCode::OK))
+                .status(http::StatusCode::OK)
                 .code("some code")
                 .title("some title")
                 .detail("some detail")
@@ -201,7 +201,7 @@ mod tests {
             Error {
                 id: Some("123".into()),
                 links: Some(fixtures::simple_links()),
-                status: Some(HttpStatus(http::StatusCode::OK)),
+                status: Some(http::StatusCode::OK.into()),
                 code: Some("some code".into()),
                 title: Some("some title".into()),
                 detail: Some("some detail".into()),
@@ -221,7 +221,7 @@ mod tests {
                 .id("123")
                 .link("self", LinkBuilder::new("http://self.com"))
                 .link("qwe", LinkBuilder::new("http://qwe.com"))
-                .status(HttpStatus(http::StatusCode::OK))
+                .status(http::StatusCode::OK)
                 .code("some code")
                 .title("some title")
                 .detail("some detail")
@@ -233,7 +233,7 @@ mod tests {
             Error {
                 id: Some("123".into()),
                 links: Some(fixtures::simple_links()),
-                status: Some(HttpStatus(http::StatusCode::OK)),
+                status: Some(http::StatusCode::OK.into()),
                 code: Some("some code".into()),
                 title: Some("some title".into()),
                 detail: Some("some detail".into()),

@@ -145,7 +145,7 @@ pub fn full_error() -> Error {
     Error {
         id: Some("789".into()),
         links: Some(different_links()),
-        status: Some(HttpStatus(http::StatusCode::OK)),
+        status: Some(http::StatusCode::OK.into()),
         code: Some("some code".into()),
         title: Some("some title".into()),
         detail: Some("some detail".into()),
@@ -161,7 +161,7 @@ pub fn full_error_value() -> Value {
     json!({
         "id": json!("789"),
         "links": different_links_value(),
-        "status": Some(HttpStatus(http::StatusCode::OK)),
+        "status": json!("200"),
         "code": json!("some code"),
         "title": json!("some title"),
         "detail": json!("some detail"),
