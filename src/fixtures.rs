@@ -22,6 +22,29 @@ pub fn meta_or_attrs_value() -> Value {
     })
 }
 
+/***********************
+ * simple_links        *
+ *                     *
+ * For easier builders *
+ ***********************/
+
+pub fn simple_links() -> Links {
+    Links {
+        other: {
+            let mut other = HashMap::new();
+            other.insert("qwe".into(), Link::String("http://qwe.com".into()));
+            other
+        },
+        self_: Some(Link::String("http://self.com".into())),
+        related: None,
+        first: None,
+        last: None,
+        prev: None,
+        next: None,
+        about: None,
+    }
+}
+
 /****************************
  * different_links          *
  *                          *

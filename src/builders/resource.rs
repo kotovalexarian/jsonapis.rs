@@ -176,26 +176,6 @@ mod tests {
     use super::*;
     use crate::fixtures;
 
-    fn links() -> Links {
-        Links {
-            other: {
-                let mut other = HashMap::new();
-                other.insert(
-                    "qwe".into(),
-                    Link::String("http://qwe.com".into()),
-                );
-                other
-            },
-            self_: Some(Link::String("http://self.com".into())),
-            related: None,
-            first: None,
-            last: None,
-            prev: None,
-            next: None,
-            about: None,
-        }
-    }
-
     #[test]
     fn empty() {
         assert_eq!(
@@ -379,7 +359,7 @@ mod tests {
                 type_: "qwerties".into(),
                 id: None,
                 meta: None,
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 attributes: None,
                 relationships: None,
             },
@@ -429,12 +409,14 @@ mod tests {
     #[test]
     fn with_links_implicit_from_entity() {
         assert_eq!(
-            ResourceBuilder::new("qwerties").links(links()).unwrap(),
+            ResourceBuilder::new("qwerties")
+                .links(fixtures::simple_links())
+                .unwrap(),
             Resource {
                 type_: "qwerties".into(),
                 id: None,
                 meta: None,
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 attributes: None,
                 relationships: None,
             },
@@ -468,7 +450,7 @@ mod tests {
                         "foo".into(),
                         Relationship {
                             meta: Some(fixtures::meta_or_attrs()),
-                            links: Some(links()),
+                            links: Some(fixtures::simple_links()),
                             data: None,
                         },
                     );
@@ -487,7 +469,7 @@ mod tests {
                         "foo".into(),
                         Relationship {
                             meta: Some(fixtures::meta_or_attrs()),
-                            links: Some(links()),
+                            links: Some(fixtures::simple_links()),
                             data: None,
                         },
                     );
@@ -505,7 +487,7 @@ mod tests {
                     "foo",
                     Relationship {
                         meta: Some(fixtures::meta_or_attrs()),
-                        links: Some(links()),
+                        links: Some(fixtures::simple_links()),
                         data: None,
                     }
                 )
@@ -522,7 +504,7 @@ mod tests {
                         "foo".into(),
                         Relationship {
                             meta: Some(fixtures::meta_or_attrs()),
-                            links: Some(links()),
+                            links: Some(fixtures::simple_links()),
                             data: None,
                         },
                     );

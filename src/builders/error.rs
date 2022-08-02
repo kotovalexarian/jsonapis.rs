@@ -156,26 +156,6 @@ mod tests {
     use super::*;
     use crate::fixtures;
 
-    fn links() -> Links {
-        Links {
-            other: {
-                let mut other = HashMap::new();
-                other.insert(
-                    "qwe".into(),
-                    Link::String("http://qwe.com".into()),
-                );
-                other
-            },
-            self_: Some(Link::String("http://self.com".into())),
-            related: None,
-            first: None,
-            last: None,
-            prev: None,
-            next: None,
-            about: None,
-        }
-    }
-
     #[test]
     fn empty() {
         assert_eq!(
@@ -220,7 +200,7 @@ mod tests {
                 .unwrap(),
             Error {
                 id: Some("123".into()),
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 status: Some(HttpStatus(http::StatusCode::OK)),
                 code: Some("some code".into()),
                 title: Some("some title".into()),
@@ -252,7 +232,7 @@ mod tests {
                 .unwrap(),
             Error {
                 id: Some("123".into()),
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 status: Some(HttpStatus(http::StatusCode::OK)),
                 code: Some("some code".into()),
                 title: Some("some title".into()),

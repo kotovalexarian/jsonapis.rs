@@ -94,26 +94,6 @@ mod tests {
     use super::*;
     use crate::fixtures;
 
-    fn links() -> Links {
-        Links {
-            other: {
-                let mut other = HashMap::new();
-                other.insert(
-                    "qwe".into(),
-                    Link::String("http://qwe.com".into()),
-                );
-                other
-            },
-            self_: Some(Link::String("http://self.com".into())),
-            related: None,
-            first: None,
-            last: None,
-            prev: None,
-            next: None,
-            about: None,
-        }
-    }
-
     #[test]
     fn empty() {
         assert_eq!(
@@ -290,7 +270,7 @@ mod tests {
                 .unwrap(),
             Relationship {
                 meta: None,
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 data: None,
             },
         );
@@ -300,7 +280,7 @@ mod tests {
     fn implicit_from_entity() {
         let relationship = Relationship {
             meta: Some(fixtures::meta_or_attrs()),
-            links: Some(links()),
+            links: Some(fixtures::simple_links()),
             data: Some(Data::Single(Resource {
                 type_: "qwerties".into(),
                 id: Some("123".into()),
@@ -333,10 +313,12 @@ mod tests {
     #[test]
     fn with_links_implicit_from_entity() {
         assert_eq!(
-            RelationshipBuilder::default().links(links()).unwrap(),
+            RelationshipBuilder::default()
+                .links(fixtures::simple_links())
+                .unwrap(),
             Relationship {
                 meta: None,
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 data: None,
             },
         );

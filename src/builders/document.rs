@@ -153,26 +153,6 @@ mod tests {
     use super::*;
     use crate::fixtures;
 
-    fn links() -> Links {
-        Links {
-            other: {
-                let mut other = HashMap::new();
-                other.insert(
-                    "qwe".into(),
-                    Link::String("http://qwe.com".into()),
-                );
-                other
-            },
-            self_: Some(Link::String("http://self.com".into())),
-            related: None,
-            first: None,
-            last: None,
-            prev: None,
-            next: None,
-            about: None,
-        }
-    }
-
     fn errors() -> Vec<Error> {
         vec![Error {
             id: Some("789".into()),
@@ -224,7 +204,7 @@ mod tests {
                     meta: None,
                 }),
                 meta: Some(fixtures::meta_or_attrs()),
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),
                     id: None,
@@ -256,7 +236,7 @@ mod tests {
                     meta: None,
                 }),
                 meta: Some(fixtures::meta_or_attrs()),
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),
                     id: None,
@@ -516,7 +496,7 @@ mod tests {
                 meta: Some(fixtures::meta_or_attrs()),
             }),
             meta: Some(fixtures::meta_or_attrs()),
-            links: Some(links()),
+            links: Some(fixtures::simple_links()),
             data: Some(Data::Single(Resource {
                 type_: "qwerties".into(),
                 id: Some("123".into()),
@@ -552,11 +532,13 @@ mod tests {
     #[test]
     fn with_links_implicit_from_entity() {
         assert_eq!(
-            DocumentBuilder::default().links(links()).unwrap(),
+            DocumentBuilder::default()
+                .links(fixtures::simple_links())
+                .unwrap(),
             Document {
                 jsonapi: None,
                 meta: None,
-                links: Some(links()),
+                links: Some(fixtures::simple_links()),
                 data: None,
                 errors: None,
             },
