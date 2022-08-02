@@ -3,12 +3,16 @@ use super::*;
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct LinksBuilder {
     pub other: HashMap<String, LinkBuilder>,
+    // Basic (https://jsonapi.org/format/#document-links)
     pub self_: Option<LinkBuilder>,
     pub related: Option<LinkBuilder>,
+    // Pagination (https://jsonapi.org/format/#fetching-pagination)
     pub first: Option<LinkBuilder>,
     pub last: Option<LinkBuilder>,
     pub prev: Option<LinkBuilder>,
     pub next: Option<LinkBuilder>,
+    // Errors (https://jsonapi.org/format/#error-objects)
+    pub about: Option<LinkBuilder>,
 }
 
 impl Builder for LinksBuilder {
@@ -23,6 +27,7 @@ impl Builder for LinksBuilder {
 
         Ok(Self::Entity {
             other,
+            // Basic
             self_: match self.self_ {
                 None => None,
                 Some(self_) => Some(self_.finish()?),
@@ -31,6 +36,7 @@ impl Builder for LinksBuilder {
                 None => None,
                 Some(related) => Some(related.finish()?),
             },
+            // Pagination
             first: match self.first {
                 None => None,
                 Some(first) => Some(first.finish()?),
@@ -47,11 +53,18 @@ impl Builder for LinksBuilder {
                 None => None,
                 Some(next) => Some(next.finish()?),
             },
+            // Errors
+            about: match self.about {
+                None => None,
+                Some(about) => Some(about.finish()?),
+            },
         })
     }
 }
 
 impl LinksBuilder {
+    // Basic
+
     pub fn self_<L: Into<LinkBuilder>>(self, self_: L) -> Self {
         Self {
             self_: Some(self_.into()),
@@ -65,6 +78,8 @@ impl LinksBuilder {
             ..self
         }
     }
+
+    // Pagination
 
     pub fn first<L: Into<LinkBuilder>>(self, first: L) -> Self {
         Self {
@@ -94,12 +109,25 @@ impl LinksBuilder {
         }
     }
 
+    // Errors
+
+    pub fn about<L: Into<LinkBuilder>>(self, about: L) -> Self {
+        Self {
+            about: Some(about.into()),
+            ..self
+        }
+    }
+
+    // Common
+
     pub fn link<N: ToString, L: Into<LinkBuilder>>(
         self,
         name: N,
         link: L,
     ) -> Self {
         let name = name.to_string();
+
+        // Basic
 
         if name == "self" {
             return Self {
@@ -114,6 +142,8 @@ impl LinksBuilder {
                 ..self
             };
         }
+
+        // Pagination
 
         if name == "first" {
             return Self {
@@ -143,6 +173,17 @@ impl LinksBuilder {
             };
         }
 
+        // Errors
+
+        if name == "about" {
+            return Self {
+                about: Some(link.into()),
+                ..self
+            };
+        }
+
+        // Other
+
         let mut other = self.other;
         other.insert(name, link.into());
 
@@ -160,12 +201,16 @@ impl From<Links> for LinksBuilder {
                 }
                 other
             },
+            // Basic
             self_: links.self_.map(|self_| self_.into()),
             related: links.related.map(|related| related.into()),
+            // Pagination
             first: links.first.map(|first| first.into()),
             last: links.last.map(|last| last.into()),
             prev: links.prev.map(|prev| prev.into()),
             next: links.next.map(|next| next.into()),
+            // Errors
+            about: links.about.map(|about| about.into()),
         }
     }
 }
@@ -193,6 +238,7 @@ mod tests {
                 last: None,
                 prev: None,
                 next: None,
+                about: None,
             },
         );
     }
@@ -213,6 +259,7 @@ mod tests {
                 .last(LinkBuilder::new("http://last.com"))
                 .prev(LinkBuilder::new("http://prev.com"))
                 .next(LinkBuilder::new("http://next.com"))
+                .about(LinkBuilder::new("http://about.com"))
                 .link("foo", LinkBuilder::new("http://foo.com"))
                 .link(
                     "bar",
@@ -248,6 +295,7 @@ mod tests {
                 last: Some(Link::String("http://last.com".into())),
                 prev: Some(Link::String("http://prev.com".into())),
                 next: Some(Link::String("http://next.com".into())),
+                about: Some(Link::String("http://about.com".into())),
             },
         );
     }
@@ -269,6 +317,7 @@ mod tests {
                 )
                 .link("prev", LinkBuilder::new("http://prev.com"))
                 .link("next", LinkBuilder::new("http://next.com"))
+                .link("about", LinkBuilder::new("http://about.com"))
                 .link("foo", LinkBuilder::new("http://foo.com"))
                 .unwrap(),
             Links {
@@ -289,6 +338,7 @@ mod tests {
                 })),
                 prev: Some(Link::String("http://prev.com".into())),
                 next: Some(Link::String("http://next.com".into())),
+                about: Some(Link::String("http://about.com".into())),
             },
         );
     }
@@ -303,6 +353,7 @@ mod tests {
                 .last("http://last.com")
                 .prev("http://prev.com")
                 .next("http://next.com")
+                .about("http://about.com")
                 .link("foo", "http://foo.com")
                 .link("bar", "http://bar.com")
                 .unwrap(),
@@ -325,6 +376,7 @@ mod tests {
                 last: Some(Link::String("http://last.com".into())),
                 prev: Some(Link::String("http://prev.com".into())),
                 next: Some(Link::String("http://next.com".into())),
+                about: Some(Link::String("http://about.com".into())),
             },
         );
     }
@@ -346,6 +398,7 @@ mod tests {
             last: Some(Link::String("http://last.com".into())),
             prev: Some(Link::String("http://prev.com".into())),
             next: Some(Link::String("http://next.com".into())),
+            about: Some(Link::String("http://about.com".into())),
         };
 
         let builder: LinksBuilder = links.clone().into();

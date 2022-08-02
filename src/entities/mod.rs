@@ -69,6 +69,7 @@ mod tests {
                 href: "http://example.com".into(),
                 meta: Some(expected_meta_or_attrs()),
             })),
+            about: None,
         };
 
         expected_links
@@ -101,6 +102,7 @@ mod tests {
                 "href": json!("http://bar.com"),
                 "meta": expected_meta_or_attrs_value(),
             }),
+            "about": json!(null),
         })
     }
 
@@ -397,6 +399,7 @@ mod tests {
                 last: None,
                 prev: None,
                 next: None,
+                about: None,
             };
 
             let json = serde_json::to_string(&links).unwrap();
@@ -412,6 +415,7 @@ mod tests {
                     "last": json!(null),
                     "prev": json!(null),
                     "next": json!(null),
+                    "about": json!(null),
                 })
             );
         }
@@ -450,6 +454,7 @@ mod tests {
                     }),
                 })),
                 next: Some(Link::String("http://next.com".into())),
+                about: Some(Link::String("http://about.com".into())),
             };
 
             let json = serde_json::to_string(&links).unwrap();
@@ -471,6 +476,7 @@ mod tests {
                         "meta": json!({ "qwerty": json!(123456) }),
                     }),
                     "next": json!("http://next.com"),
+                    "about": json!("http://about.com"),
                     "foo": json!("http://foo.com"),
                     "bar": json!({
                         "href": json!("http://bar.com"),

@@ -198,6 +198,7 @@ mod tests {
             last: None,
             prev: None,
             next: None,
+            about: None,
         }
     }
 
@@ -277,6 +278,7 @@ mod tests {
                         href: "http://next.com".into(),
                         meta: Some(meta()),
                     })),
+                    about: None,
                 }),
                 attributes: Some(meta()),
                 relationships: Some({
@@ -330,6 +332,7 @@ mod tests {
                         href: "http://next.com".into(),
                         meta: Some(meta()),
                     })),
+                    about: None,
                 }),
                 attributes: Some(meta()),
                 relationships: Some({

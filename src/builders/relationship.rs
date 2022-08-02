@@ -116,6 +116,7 @@ mod tests {
             last: None,
             prev: None,
             next: None,
+            about: None,
         }
     }
 
@@ -166,6 +167,7 @@ mod tests {
                         meta: Some(meta()),
                     })),
                     next: None,
+                    about: None,
                 }),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),
@@ -209,6 +211,7 @@ mod tests {
                         meta: Some(meta()),
                     })),
                     next: None,
+                    about: None,
                 }),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),

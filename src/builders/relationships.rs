@@ -66,6 +66,7 @@ mod tests {
             last: None,
             prev: None,
             next: None,
+            about: None,
         }
     }
 
