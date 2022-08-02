@@ -36,7 +36,7 @@ use serde::{
 };
 use serde_json::Value;
 
-pub trait Entity: Clone + Debug + Eq + PartialEq + Sized {}
+pub trait Entity: Clone + Debug + Eq + PartialEq + Serialize + Sized {}
 
 #[cfg(test)]
 mod tests {
