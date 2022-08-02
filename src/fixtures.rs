@@ -104,6 +104,29 @@ pub fn different_links_value() -> Value {
     })
 }
 
+/***********************
+ * simple_error[s]     *
+ *                     *
+ * For easier builders *
+ ***********************/
+
+pub fn simple_errors() -> Vec<Error> {
+    vec![simple_error()]
+}
+
+pub fn simple_error() -> Error {
+    Error {
+        id: Some("789".into()),
+        links: None,
+        status: None,
+        code: None,
+        title: None,
+        detail: None,
+        source: None,
+        meta: None,
+    }
+}
+
 /*******************
  * full_error[s]   *
  *                 *

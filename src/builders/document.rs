@@ -153,19 +153,6 @@ mod tests {
     use super::*;
     use crate::fixtures;
 
-    fn errors() -> Vec<Error> {
-        vec![Error {
-            id: Some("789".into()),
-            links: None,
-            status: None,
-            code: None,
-            title: None,
-            detail: None,
-            source: None,
-            meta: None,
-        }]
-    }
-
     #[test]
     fn empty() {
         assert_eq!(
@@ -213,7 +200,7 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 })),
-                errors: Some(errors()),
+                errors: Some(fixtures::simple_errors()),
             },
         );
     }
@@ -245,7 +232,7 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 })),
-                errors: Some(errors()),
+                errors: Some(fixtures::simple_errors()),
             },
         );
     }
@@ -428,7 +415,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
-                errors: Some(errors()),
+                errors: Some(fixtures::simple_errors()),
             },
         );
     }
@@ -505,7 +492,7 @@ mod tests {
                 attributes: None,
                 relationships: None,
             })),
-            errors: Some(errors()),
+            errors: Some(fixtures::simple_errors()),
         };
 
         let builder: DocumentBuilder = document.clone().into();
@@ -548,13 +535,15 @@ mod tests {
     #[test]
     fn with_errors_implicit_from_entity() {
         assert_eq!(
-            DocumentBuilder::default().errors(errors()).unwrap(),
+            DocumentBuilder::default()
+                .errors(fixtures::simple_errors())
+                .unwrap(),
             Document {
                 jsonapi: None,
                 meta: None,
                 links: None,
                 data: None,
-                errors: Some(errors()),
+                errors: Some(fixtures::simple_errors()),
             },
         );
     }
