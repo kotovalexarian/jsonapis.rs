@@ -30,7 +30,7 @@ pub struct Response {
 
 #[derive(Debug)]
 pub enum Error {
-    Response(Response),
+    Response(Box<Response>),
     Url(ParseError),
     Http(ReqError),
     InvalidStatus(StatusCode),
@@ -84,7 +84,7 @@ impl Client {
                 Err(Error::InvalidStatus(status))
             }
         } else {
-            Err(Error::Response(response))
+            Err(Error::Response(Box::new(response)))
         }
     }
 
@@ -112,7 +112,7 @@ impl Client {
                 Err(Error::InvalidStatus(status))
             }
         } else {
-            Err(Error::Response(response))
+            Err(Error::Response(Box::new(response)))
         }
     }
 
