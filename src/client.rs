@@ -31,14 +31,14 @@ pub struct Response {
 #[derive(Debug)]
 pub enum Error {
     Response(Response),
-    URL(ParseError),
-    HTTP(ReqError),
+    Url(ParseError),
+    Http(ReqError),
     InvalidStatus(StatusCode),
     NoContentType,
     InvalidContentType(HeaderValue),
     InvalidLocationUtf8(Utf8Error),
     Text(ReqError),
-    JSON(JsonError),
+    Json(JsonError),
 }
 
 impl Response {
@@ -70,7 +70,7 @@ impl Client {
         V: AsRef<str>,
         <I as IntoIterator>::Item: std::borrow::Borrow<(K, V)>,
     {
-        let url = self.url_for_get(path, params).map_err(Error::URL)?;
+        let url = self.url_for_get(path, params).map_err(Error::Url)?;
 
         let (status, response) = Self::make_request(ReqClient::new().get(url))?;
 
@@ -93,7 +93,7 @@ impl Client {
         P: Display,
         D: Into<&'d Document>,
     {
-        let url = self.url_for_post(path).map_err(Error::URL)?;
+        let url = self.url_for_post(path).map_err(Error::Url)?;
 
         let document: &Document = document.into();
 
@@ -156,7 +156,7 @@ impl Client {
             .header(ACCEPT, MIME)
             .header(CONTENT_TYPE, MIME)
             .send()
-            .map_err(Error::HTTP)?;
+            .map_err(Error::Http)?;
 
         let status = response.status();
 
@@ -181,7 +181,7 @@ impl Client {
 
         let json = response.text().map_err(Error::Text)?;
 
-        let document = serde_json::from_str(&json).map_err(Error::JSON)?;
+        let document = serde_json::from_str(&json).map_err(Error::Json)?;
 
         Ok((status, Response { document, location }))
     }
