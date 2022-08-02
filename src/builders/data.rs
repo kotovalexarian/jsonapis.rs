@@ -9,7 +9,7 @@ pub enum DataBuilder {
 impl Builder<'_> for DataBuilder {
     type Entity = Data;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(match self {
             Self::Single(resource) => Data::Single(resource.finish()?),
             Self::Multiple(resources) => Data::Multiple({

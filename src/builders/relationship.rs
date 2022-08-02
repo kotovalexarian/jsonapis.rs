@@ -10,7 +10,7 @@ pub struct RelationshipBuilder {
 impl Builder<'_> for RelationshipBuilder {
     type Entity = Relationship;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(Self::Entity {
             meta: match self.meta {
                 None => None,

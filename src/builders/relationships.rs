@@ -6,7 +6,7 @@ pub struct RelationshipsBuilder(HashMap<String, RelationshipBuilder>);
 impl Builder<'_> for RelationshipsBuilder {
     type Entity = Relationships;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         let mut relationships = Relationships::new();
 
         for (name, relationship) in self.0 {

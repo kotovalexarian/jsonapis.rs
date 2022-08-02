@@ -15,7 +15,7 @@ pub struct ErrorBuilder {
 impl Builder<'_> for ErrorBuilder {
     type Entity = Error;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(Self::Entity {
             id: self.id,
             links: match self.links {

@@ -9,7 +9,7 @@ pub struct ErrorSourceBuilder {
 impl Builder<'_> for ErrorSourceBuilder {
     type Entity = ErrorSource;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(Self::Entity {
             pointer: self.pointer,
             parameter: self.parameter,

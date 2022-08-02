@@ -6,7 +6,7 @@ pub struct MetaOrAttrsBuilder(MetaOrAttrs);
 impl Builder<'_> for MetaOrAttrsBuilder {
     type Entity = MetaOrAttrs;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(self.0)
     }
 }

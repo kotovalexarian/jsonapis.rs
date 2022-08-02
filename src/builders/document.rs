@@ -11,7 +11,7 @@ pub struct DocumentBuilder {
 impl Builder<'_> for DocumentBuilder {
     type Entity = Document;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(Self::Entity {
             jsonapi: match self.jsonapi {
                 None => None,

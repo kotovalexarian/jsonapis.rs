@@ -37,7 +37,7 @@ impl ResourceBuilder {
 impl Builder<'_> for ResourceBuilder {
     type Entity = Resource;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(Self::Entity {
             type_: self.type_,
             id: self.id,

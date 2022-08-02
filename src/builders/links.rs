@@ -18,7 +18,7 @@ pub struct LinksBuilder {
 impl Builder<'_> for LinksBuilder {
     type Entity = Links;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         let mut other = HashMap::new();
 
         for (key, value) in self.other {

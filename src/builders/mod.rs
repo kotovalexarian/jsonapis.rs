@@ -29,16 +29,19 @@ use std::fmt::Debug;
 
 use serde_json::Value;
 
+#[derive(Debug)]
+pub struct BuildErrors;
+
 pub trait Builder<'de>: Clone + Debug + Eq + PartialEq + Sized {
     type Entity: Entity<'de>;
 
-    fn finish(self) -> Result<Self::Entity, ()>;
+    fn finish(self) -> Result<Self::Entity, BuildErrors>;
 
     fn expect(self, msg: &str) -> Self::Entity {
         self.finish().expect(msg)
     }
 
-    fn expect_err(self, msg: &str) {
+    fn expect_err(self, msg: &str) -> BuildErrors {
         self.finish().expect_err(msg)
     }
 
@@ -46,7 +49,7 @@ pub trait Builder<'de>: Clone + Debug + Eq + PartialEq + Sized {
         self.finish().unwrap()
     }
 
-    fn unwrap_err(self) {
+    fn unwrap_err(self) -> BuildErrors {
         self.finish().unwrap_err()
     }
 }

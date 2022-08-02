@@ -18,7 +18,7 @@ impl LinkBuilder {
 impl Builder<'_> for LinkBuilder {
     type Entity = Link;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(match self.meta {
             None => Link::String(self.href),
             Some(meta) => Link::Object(LinkObject {

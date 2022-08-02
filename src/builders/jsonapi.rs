@@ -9,7 +9,7 @@ pub struct JsonApiBuilder {
 impl Builder<'_> for JsonApiBuilder {
     type Entity = JsonApi;
 
-    fn finish(self) -> Result<Self::Entity, ()> {
+    fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(Self::Entity {
             version: self.version,
             meta: match self.meta {
