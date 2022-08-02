@@ -1,5 +1,6 @@
 mod data;
 mod document;
+mod error_source;
 mod http_status;
 mod jsonapi;
 mod link;
@@ -13,6 +14,7 @@ mod version;
 
 pub use data::Data;
 pub use document::Document;
+pub use error_source::ErrorSource;
 pub use http_status::HttpStatus;
 pub use jsonapi::JsonApi;
 pub use link::Link;
