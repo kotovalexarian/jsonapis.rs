@@ -142,6 +142,7 @@ fn main() {
                 }),
             }),
         ]),
+        "errors": json!(null),
     });
 
     let actual_json = serde_json::to_string(&document).unwrap();

@@ -165,6 +165,22 @@ mod tests {
         })
     }
 
+    fn expected_errors() -> Vec<Error> {
+        vec![Error {
+            id: Some("789".into()),
+            links: Some(expected_links()),
+            status: Some(HttpStatus(http::StatusCode::OK)),
+            code: Some("some code".into()),
+            title: Some("some title".into()),
+            detail: Some("some detail".into()),
+            source: Some(ErrorSource {
+                pointer: Some("/foo/0/bar/1".into()),
+                parameter: Some("car".into()),
+            }),
+            meta: Some(expected_meta_or_attrs()),
+        }]
+    }
+
     #[test]
     fn serialize_and_deserialize() {
         let document = Document {
@@ -182,6 +198,7 @@ mod tests {
                 attributes: Some(expected_meta_or_attrs()),
                 relationships: Some(expected_relationships()),
             }])),
+            errors: Some(expected_errors()),
         };
 
         let serialized = serde_json::to_string(&document).unwrap();
@@ -204,6 +221,7 @@ mod tests {
                 meta: Some(expected_meta_or_attrs()),
                 links: Some(expected_links()),
                 data: None,
+                errors: None,
             };
 
             let value = json!({
@@ -229,6 +247,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             };
 
             let json = "{\"data\": null}";
@@ -245,6 +264,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: Some(Data::Multiple(vec![])),
+                errors: None,
             };
 
             let json = "{\"data\": []}";
@@ -268,6 +288,7 @@ mod tests {
                     attributes: Some(expected_meta_or_attrs()),
                     relationships: Some(expected_relationships()),
                 })),
+                errors: None,
             };
 
             let value = json!({
@@ -302,6 +323,7 @@ mod tests {
                     attributes: Some(expected_meta_or_attrs()),
                     relationships: Some(expected_relationships()),
                 }])),
+                errors: None,
             };
 
             let value = json!({
@@ -335,6 +357,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             };
 
             let json = serde_json::to_string(&document).unwrap();
@@ -348,6 +371,7 @@ mod tests {
                     "meta": json!(null),
                     "links": json!(null),
                     "data": json!(null),
+                    "errors": json!(null),
                 })
             );
         }
@@ -369,6 +393,7 @@ mod tests {
                     attributes: Some(expected_meta_or_attrs()),
                     relationships: Some(expected_relationships()),
                 }])),
+                errors: Some(expected_errors()),
             };
 
             let json = serde_json::to_string(&document).unwrap();
@@ -392,6 +417,21 @@ mod tests {
                             "links": expected_links_value(),
                             "attributes": expected_meta_or_attrs_value(),
                             "relationships": expected_relationships_value(),
+                        }),
+                    ]),
+                    "errors": json!([
+                        json!({
+                            "id": json!("789"),
+                            "links": expected_links_value(),
+                            "status": Some(HttpStatus(http::StatusCode::OK)),
+                            "code": json!("some code"),
+                            "title": json!("some title"),
+                            "detail": json!("some detail"),
+                            "source": json!({
+                                "pointer": json!("/foo/0/bar/1"),
+                                "parameter": json!("car"),
+                            }),
+                            "meta": expected_meta_or_attrs_value(),
                         }),
                     ]),
                 })

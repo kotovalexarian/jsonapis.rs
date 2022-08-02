@@ -8,6 +8,7 @@ pub struct Document {
     pub meta: Option<MetaOrAttrs>,
     pub links: Option<Links>,
     pub data: Option<Data>,
+    pub errors: Option<Vec<Error>>,
 }
 
 #[cfg(test)]
@@ -24,13 +25,15 @@ mod tests {
                     meta: None,
                     links: None,
                     data: None,
+                    errors: None,
                 },
             ),
             "Document { \
                 jsonapi: None, \
                 meta: None, \
                 links: None, \
-                data: None \
+                data: None, \
+                errors: None \
             }",
         );
     }
@@ -43,12 +46,14 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             },
             Document {
                 jsonapi: None,
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             },
         );
 
@@ -58,6 +63,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             },
             Document {
                 jsonapi: Some(JsonApi {
@@ -67,6 +73,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             },
         );
     }

@@ -6,12 +6,26 @@ pub struct DocumentBuilder {
     meta: Option<MetaOrAttrsBuilder>,
     links: Option<LinksBuilder>,
     data: Option<DataBuilder>,
+    errors: Option<Vec<ErrorBuilder>>,
 }
 
 impl Builder<'_> for DocumentBuilder {
     type Entity = Document;
 
     fn finish(self) -> Result<Self::Entity, BuildErrors> {
+        let errors = match self.errors {
+            None => None,
+            Some(errors) => {
+                let mut new_errors = Vec::new();
+
+                for error in errors {
+                    new_errors.push(error.finish()?);
+                }
+
+                Some(new_errors)
+            }
+        };
+
         Ok(Self::Entity {
             jsonapi: match self.jsonapi {
                 None => None,
@@ -29,6 +43,7 @@ impl Builder<'_> for DocumentBuilder {
                 None => None,
                 Some(data) => Some(data.finish()?),
             },
+            errors,
         })
     }
 }
@@ -62,6 +77,19 @@ impl DocumentBuilder {
         }
     }
 
+    pub fn errors<E: Into<ErrorBuilder>>(self, errors: Vec<E>) -> Self {
+        let mut new_errors = Vec::new();
+
+        for error in errors {
+            new_errors.push(error.into());
+        }
+
+        Self {
+            errors: Some(new_errors),
+            ..self
+        }
+    }
+
     pub fn meta1<N: ToString, V: Into<Value>>(self, name: N, meta1: V) -> Self {
         let meta = self.meta.unwrap_or_default().item(name, meta1);
 
@@ -83,15 +111,39 @@ impl DocumentBuilder {
             ..self
         }
     }
+
+    pub fn error<E: Into<ErrorBuilder>>(self, error: E) -> Self {
+        let mut errors = self.errors.unwrap_or_default();
+        errors.push(error.into());
+
+        Self {
+            errors: Some(errors),
+            ..self
+        }
+    }
 }
 
 impl From<Document> for DocumentBuilder {
     fn from(document: Document) -> Self {
+        let errors = match document.errors {
+            None => None,
+            Some(errors) => {
+                let mut new_errors = Vec::new();
+
+                for error in errors {
+                    new_errors.push(error.into());
+                }
+
+                Some(new_errors)
+            }
+        };
+
         Self {
             jsonapi: document.jsonapi.map(|jsonapi| jsonapi.into()),
             meta: document.meta.map(|meta| meta.into()),
             links: document.links.map(|links| links.into()),
             data: document.data.map(|data| data.into()),
+            errors,
         }
     }
 }
@@ -127,6 +179,19 @@ mod tests {
         }
     }
 
+    fn errors() -> Vec<Error> {
+        vec![Error {
+            id: Some("789".into()),
+            links: None,
+            status: None,
+            code: None,
+            title: None,
+            detail: None,
+            source: None,
+            meta: None,
+        }]
+    }
+
     #[test]
     fn empty() {
         assert_eq!(
@@ -136,6 +201,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             },
         );
     }
@@ -156,6 +222,7 @@ mod tests {
                         .link("qwe", LinkBuilder::new("http://qwe.com")),
                 )
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
+                .errors(vec![ErrorBuilder::default().id("789")])
                 .unwrap(),
             Document {
                 jsonapi: Some(JsonApi {
@@ -172,6 +239,7 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 })),
+                errors: Some(errors()),
             },
         );
     }
@@ -186,6 +254,7 @@ mod tests {
                 .link("self", LinkBuilder::new("http://self.com"))
                 .link("qwe", LinkBuilder::new("http://qwe.com"))
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
+                .error(ErrorBuilder::default().id("789"))
                 .unwrap(),
             Document {
                 jsonapi: Some(JsonApi {
@@ -202,6 +271,7 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 })),
+                errors: Some(errors()),
             },
         );
     }
@@ -220,6 +290,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             },
         );
     }
@@ -238,6 +309,7 @@ mod tests {
                 meta: None,
                 links: None,
                 data: None,
+                errors: None,
             },
         );
     }
@@ -257,6 +329,7 @@ mod tests {
                 meta: Some(meta()),
                 links: None,
                 data: None,
+                errors: None,
             },
         );
     }
@@ -294,6 +367,7 @@ mod tests {
                     about: None,
                 }),
                 data: None,
+                errors: None,
             },
         );
     }
@@ -318,6 +392,7 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 }])),
+                errors: None,
             },
         );
     }
@@ -340,6 +415,7 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 })),
+                errors: None,
             },
         );
     }
@@ -362,6 +438,23 @@ mod tests {
                     attributes: None,
                     relationships: None,
                 }])),
+                errors: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_errors() {
+        assert_eq!(
+            DocumentBuilder::default()
+                .errors(vec![ErrorBuilder::default().id("789")])
+                .unwrap(),
+            Document {
+                jsonapi: None,
+                meta: None,
+                links: None,
+                data: None,
+                errors: Some(errors()),
             },
         );
     }
@@ -383,6 +476,7 @@ mod tests {
                 }),
                 links: None,
                 data: None,
+                errors: None,
             },
         );
     }
@@ -415,6 +509,7 @@ mod tests {
                     about: None,
                 }),
                 data: None,
+                errors: None,
             },
         );
     }
@@ -427,16 +522,7 @@ mod tests {
                 meta: Some(meta()),
             }),
             meta: Some(meta()),
-            links: Some(Links {
-                other: HashMap::new(),
-                self_: Some(Link::String("http://self.com".into())),
-                related: Some(Link::String("http://related.com".into())),
-                first: None,
-                last: None,
-                prev: None,
-                next: None,
-                about: None,
-            }),
+            links: Some(links()),
             data: Some(Data::Single(Resource {
                 type_: "qwerties".into(),
                 id: Some("123".into()),
@@ -445,6 +531,7 @@ mod tests {
                 attributes: None,
                 relationships: None,
             })),
+            errors: Some(errors()),
         };
 
         let builder: DocumentBuilder = document.clone().into();
@@ -461,6 +548,7 @@ mod tests {
                 meta: Some(meta()),
                 links: None,
                 data: None,
+                errors: None,
             },
         );
     }
@@ -474,6 +562,21 @@ mod tests {
                 meta: None,
                 links: Some(links()),
                 data: None,
+                errors: None,
+            },
+        );
+    }
+
+    #[test]
+    fn with_errors_implicit_from_entity() {
+        assert_eq!(
+            DocumentBuilder::default().errors(errors()).unwrap(),
+            Document {
+                jsonapi: None,
+                meta: None,
+                links: None,
+                data: None,
+                errors: Some(errors()),
             },
         );
     }
