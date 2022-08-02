@@ -42,13 +42,7 @@ impl From<Relationships> for RelationshipsBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     fn links() -> Links {
         Links {
@@ -111,7 +105,7 @@ mod tests {
                 relationships.insert(
                     "bar".into(),
                     Relationship {
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                         links: None,
                         data: None,
                     },
@@ -143,7 +137,7 @@ mod tests {
                 .rel(
                     "qwerty",
                     Relationship {
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                         links: Some(links()),
                         data: None,
                     }
@@ -154,7 +148,7 @@ mod tests {
                 relationships.insert(
                     "qwerty".into(),
                     Relationship {
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                         links: Some(links()),
                         data: None,
                     },

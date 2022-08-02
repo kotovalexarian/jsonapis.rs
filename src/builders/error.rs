@@ -154,13 +154,7 @@ impl From<Error> for ErrorBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     fn links() -> Links {
         Links {
@@ -235,7 +229,7 @@ mod tests {
                     pointer: Some("/foo/0/bar/1".into()),
                     parameter: Some("car".into()),
                 }),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             },
         );
     }
@@ -267,7 +261,7 @@ mod tests {
                     pointer: Some("/foo/0/bar/1".into()),
                     parameter: Some("car".into()),
                 }),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             },
         );
     }

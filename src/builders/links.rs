@@ -218,13 +218,7 @@ impl From<Links> for LinksBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     #[test]
     fn empty() {
@@ -281,7 +275,7 @@ mod tests {
                         "bar".into(),
                         Link::Object(LinkObject {
                             href: "http://bar.com".into(),
-                            meta: Some(meta()),
+                            meta: Some(fixtures::meta_or_attrs()),
                         }),
                     );
                     other
@@ -290,7 +284,7 @@ mod tests {
                 related: Some(Link::String("http://related.com".into())),
                 first: Some(Link::Object(LinkObject {
                     href: "http://first.com".into(),
-                    meta: Some(meta()),
+                    meta: Some(fixtures::meta_or_attrs()),
                 })),
                 last: Some(Link::String("http://last.com".into())),
                 prev: Some(Link::String("http://prev.com".into())),
@@ -334,7 +328,7 @@ mod tests {
                 first: Some(Link::String("http://first.com".into())),
                 last: Some(Link::Object(LinkObject {
                     href: "http://last.com".into(),
-                    meta: Some(meta()),
+                    meta: Some(fixtures::meta_or_attrs()),
                 })),
                 prev: Some(Link::String("http://prev.com".into())),
                 next: Some(Link::String("http://next.com".into())),

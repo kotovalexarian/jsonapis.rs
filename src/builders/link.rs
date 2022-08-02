@@ -65,13 +65,7 @@ impl<S: ToString> From<S> for LinkBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     #[test]
     fn empty() {
@@ -93,7 +87,7 @@ mod tests {
                 .unwrap(),
             Link::Object(LinkObject {
                 href: "http://example.com".into(),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             }),
         );
     }
@@ -111,7 +105,7 @@ mod tests {
     fn implicit_from_entity_object() {
         let link = Link::Object(LinkObject {
             href: "http://example.com".into(),
-            meta: Some(meta()),
+            meta: Some(fixtures::meta_or_attrs()),
         });
 
         let builder: LinkBuilder = link.clone().into();
@@ -122,10 +116,12 @@ mod tests {
     #[test]
     fn with_meta_implicit_from_entity() {
         assert_eq!(
-            LinkBuilder::new("http://example.com").meta(meta()).unwrap(),
+            LinkBuilder::new("http://example.com")
+                .meta(fixtures::meta_or_attrs())
+                .unwrap(),
             Link::Object(LinkObject {
                 href: "http://example.com".into(),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             }),
         );
     }

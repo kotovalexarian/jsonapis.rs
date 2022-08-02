@@ -174,13 +174,7 @@ impl From<Resource> for ResourceBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     fn links() -> Links {
         Links {
@@ -266,7 +260,7 @@ mod tests {
             Resource {
                 type_: "qwerties".into(),
                 id: Some("123".into()),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: Some(Links {
                     other: HashMap::new(),
                     self_: Some(Link::String("http://self.com".into())),
@@ -276,11 +270,11 @@ mod tests {
                     prev: None,
                     next: Some(Link::Object(LinkObject {
                         href: "http://next.com".into(),
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                     })),
                     about: None,
                 }),
-                attributes: Some(meta()),
+                attributes: Some(fixtures::meta_or_attrs()),
                 relationships: Some({
                     let mut relationships = Relationships::new();
                     relationships.insert(
@@ -320,7 +314,7 @@ mod tests {
             Resource {
                 type_: "qwerties".into(),
                 id: Some("123".into()),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: Some(Links {
                     other: HashMap::new(),
                     self_: Some(Link::String("http://self.com".into())),
@@ -330,11 +324,11 @@ mod tests {
                     prev: None,
                     next: Some(Link::Object(LinkObject {
                         href: "http://next.com".into(),
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                     })),
                     about: None,
                 }),
-                attributes: Some(meta()),
+                attributes: Some(fixtures::meta_or_attrs()),
                 relationships: Some({
                     let mut relationships = Relationships::new();
                     relationships.insert(
@@ -418,11 +412,13 @@ mod tests {
     #[test]
     fn with_meta_implicit_from_entity() {
         assert_eq!(
-            ResourceBuilder::new("qwerties").meta(meta()).unwrap(),
+            ResourceBuilder::new("qwerties")
+                .meta(fixtures::meta_or_attrs())
+                .unwrap(),
             Resource {
                 type_: "qwerties".into(),
                 id: None,
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: None,
                 attributes: None,
                 relationships: None,
@@ -448,13 +444,15 @@ mod tests {
     #[test]
     fn with_attributes_implicit_from_entity() {
         assert_eq!(
-            ResourceBuilder::new("qwerties").attributes(meta()).unwrap(),
+            ResourceBuilder::new("qwerties")
+                .attributes(fixtures::meta_or_attrs())
+                .unwrap(),
             Resource {
                 type_: "qwerties".into(),
                 id: None,
                 meta: None,
                 links: None,
-                attributes: Some(meta()),
+                attributes: Some(fixtures::meta_or_attrs()),
                 relationships: None,
             },
         );
@@ -469,7 +467,7 @@ mod tests {
                     relationships.insert(
                         "foo".into(),
                         Relationship {
-                            meta: Some(meta()),
+                            meta: Some(fixtures::meta_or_attrs()),
                             links: Some(links()),
                             data: None,
                         },
@@ -488,7 +486,7 @@ mod tests {
                     relationships.insert(
                         "foo".into(),
                         Relationship {
-                            meta: Some(meta()),
+                            meta: Some(fixtures::meta_or_attrs()),
                             links: Some(links()),
                             data: None,
                         },
@@ -506,7 +504,7 @@ mod tests {
                 .rel(
                     "foo",
                     Relationship {
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                         links: Some(links()),
                         data: None,
                     }
@@ -523,7 +521,7 @@ mod tests {
                     relationships.insert(
                         "foo".into(),
                         Relationship {
-                            meta: Some(meta()),
+                            meta: Some(fixtures::meta_or_attrs()),
                             links: Some(links()),
                             data: None,
                         },

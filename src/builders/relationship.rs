@@ -92,13 +92,7 @@ impl<R: Into<ResourceBuilder>> From<R> for RelationshipBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     fn links() -> Links {
         Links {
@@ -155,7 +149,7 @@ mod tests {
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
                 .unwrap(),
             Relationship {
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: Some(Links {
                     other: HashMap::new(),
                     self_: Some(Link::String("http://self.com".into())),
@@ -164,7 +158,7 @@ mod tests {
                     last: None,
                     prev: Some(Link::Object(LinkObject {
                         href: "http://prev.com".into(),
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                     })),
                     next: None,
                     about: None,
@@ -199,7 +193,7 @@ mod tests {
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
                 .unwrap(),
             Relationship {
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: Some(Links {
                     other: HashMap::new(),
                     self_: Some(Link::String("http://self.com".into())),
@@ -208,7 +202,7 @@ mod tests {
                     last: None,
                     prev: Some(Link::Object(LinkObject {
                         href: "http://prev.com".into(),
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                     })),
                     next: None,
                     about: None,
@@ -305,7 +299,7 @@ mod tests {
     #[test]
     fn implicit_from_entity() {
         let relationship = Relationship {
-            meta: Some(meta()),
+            meta: Some(fixtures::meta_or_attrs()),
             links: Some(links()),
             data: Some(Data::Single(Resource {
                 type_: "qwerties".into(),
@@ -325,9 +319,11 @@ mod tests {
     #[test]
     fn with_meta_implicit_from_entity() {
         assert_eq!(
-            RelationshipBuilder::default().meta(meta()).unwrap(),
+            RelationshipBuilder::default()
+                .meta(fixtures::meta_or_attrs())
+                .unwrap(),
             Relationship {
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: None,
                 data: None,
             },

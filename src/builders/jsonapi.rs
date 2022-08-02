@@ -57,13 +57,7 @@ impl From<Version> for JsonApiBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     #[test]
     fn empty() {
@@ -89,7 +83,7 @@ mod tests {
                 .unwrap(),
             JsonApi {
                 version: Some(Version::new(456)),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             },
         );
     }
@@ -119,7 +113,7 @@ mod tests {
                 .unwrap(),
             JsonApi {
                 version: None,
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             },
         );
     }
@@ -128,7 +122,7 @@ mod tests {
     fn implicit_from_entity() {
         let jsonapi = JsonApi {
             version: Some(Version::new(456)),
-            meta: Some(meta()),
+            meta: Some(fixtures::meta_or_attrs()),
         };
 
         let builder: JsonApiBuilder = jsonapi.clone().into();
@@ -139,10 +133,12 @@ mod tests {
     #[test]
     fn with_meta_implicit_from_entity() {
         assert_eq!(
-            JsonApiBuilder::default().meta(meta()).unwrap(),
+            JsonApiBuilder::default()
+                .meta(fixtures::meta_or_attrs())
+                .unwrap(),
             JsonApi {
                 version: None,
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             },
         );
     }

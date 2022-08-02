@@ -151,13 +151,7 @@ impl From<Document> for DocumentBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn meta() -> MetaOrAttrs {
-        let mut meta = MetaOrAttrs::new();
-        meta.insert("foo".into(), 123.into());
-        meta.insert("bar".into(), "qwe".into());
-        meta
-    }
+    use crate::fixtures;
 
     fn links() -> Links {
         Links {
@@ -229,7 +223,7 @@ mod tests {
                     version: Some(Version::new(456)),
                     meta: None,
                 }),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: Some(links()),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),
@@ -261,7 +255,7 @@ mod tests {
                     version: Some(Version::new(456)),
                     meta: None,
                 }),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: Some(links()),
                 data: Some(Data::Single(Resource {
                     type_: "qwerties".into(),
@@ -326,7 +320,7 @@ mod tests {
                 .unwrap(),
             Document {
                 jsonapi: None,
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: None,
                 data: None,
                 errors: None,
@@ -361,7 +355,7 @@ mod tests {
                     last: None,
                     prev: Some(Link::Object(LinkObject {
                         href: "http://prev.com".into(),
-                        meta: Some(meta()),
+                        meta: Some(fixtures::meta_or_attrs()),
                     })),
                     next: None,
                     about: None,
@@ -519,9 +513,9 @@ mod tests {
         let document = Document {
             jsonapi: Some(JsonApi {
                 version: Some(Version::new(456)),
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
             }),
-            meta: Some(meta()),
+            meta: Some(fixtures::meta_or_attrs()),
             links: Some(links()),
             data: Some(Data::Single(Resource {
                 type_: "qwerties".into(),
@@ -542,10 +536,12 @@ mod tests {
     #[test]
     fn with_meta_implicit_from_entity() {
         assert_eq!(
-            DocumentBuilder::default().meta(meta()).unwrap(),
+            DocumentBuilder::default()
+                .meta(fixtures::meta_or_attrs())
+                .unwrap(),
             Document {
                 jsonapi: None,
-                meta: Some(meta()),
+                meta: Some(fixtures::meta_or_attrs()),
                 links: None,
                 data: None,
                 errors: None,
