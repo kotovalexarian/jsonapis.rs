@@ -110,7 +110,7 @@ pub fn different_links_value() -> Value {
  * For easier builders *
  ***********************/
 
-pub fn simple_errors() -> Vec<Error> {
+pub fn simple_errors() -> Errors {
     vec![simple_error()]
 }
 
@@ -133,7 +133,7 @@ pub fn simple_error() -> Error {
  * With all fields *
  *******************/
 
-pub fn full_errors() -> Vec<Error> {
+pub fn full_errors() -> Errors {
     vec![full_error()]
 }
 

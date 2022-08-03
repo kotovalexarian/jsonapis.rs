@@ -8,7 +8,7 @@ pub struct Document {
     pub meta: Option<MetaOrAttrs>,
     pub links: Option<Links>,
     pub data: Option<Data>,
-    pub errors: Option<Vec<Error>>,
+    pub errors: Option<Errors>,
 }
 
 #[cfg(test)]
