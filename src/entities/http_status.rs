@@ -48,12 +48,9 @@ impl<'de> Deserialize<'de> for HttpStatus {
             where
                 E: serde::de::Error,
             {
-                match value.parse::<u16>() {
+                match value.parse::<HttpStatus>() {
                     Err(_) => Err(E::custom("invalid HTTP status code")),
-                    Ok(number) => match StatusCode::from_u16(number) {
-                        Err(_) => Err(E::custom("invalid HTTP status code")),
-                        Ok(status_code) => Ok(HttpStatus(status_code)),
-                    },
+                    Ok(http_status) => Ok(http_status),
                 }
             }
         }
