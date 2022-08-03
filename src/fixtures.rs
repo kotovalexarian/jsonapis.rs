@@ -145,7 +145,7 @@ pub fn full_error() -> Error {
     Error {
         id: Some("789".into()),
         links: Some(different_links()),
-        status: Some(http::StatusCode::OK.into()),
+        status: Some(HttpStatus::OK),
         code: Some("some code".into()),
         title: Some("some title".into()),
         detail: Some("some detail".into()),
