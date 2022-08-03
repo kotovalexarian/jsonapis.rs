@@ -1,6 +1,6 @@
 [package]
 name = "jsonapis"
-version = "0.0.6"
+version = "0.0.7"
 authors = ["Alex Kotov <kotovalexarian@gmail.com>"]
 edition = "2021"
 description = "JSON:API library for Rust"
