@@ -1,6 +1,6 @@
 mod data;
 mod document;
-mod error;
+mod error_object;
 mod error_source;
 mod jsonapi;
 mod link;
@@ -12,7 +12,7 @@ mod resource;
 
 pub use data::DataBuilder;
 pub use document::DocumentBuilder;
-pub use error::ErrorBuilder;
+pub use error_object::ErrorObjectBuilder;
 pub use error_source::ErrorSourceBuilder;
 pub use jsonapi::JsonApiBuilder;
 pub use link::LinkBuilder;

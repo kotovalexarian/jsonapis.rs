@@ -1,7 +1,7 @@
 use super::*;
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct ErrorBuilder {
+pub struct ErrorObjectBuilder {
     id: Option<String>,
     links: Option<LinksBuilder>,
     status: Option<HttpStatus>,
@@ -12,8 +12,8 @@ pub struct ErrorBuilder {
     meta: Option<MetaOrAttrsBuilder>,
 }
 
-impl Builder<'_> for ErrorBuilder {
-    type Entity = Error;
+impl Builder<'_> for ErrorObjectBuilder {
+    type Entity = ErrorObject;
 
     fn finish(self) -> Result<Self::Entity, BuildErrors> {
         Ok(Self::Entity {
@@ -38,7 +38,7 @@ impl Builder<'_> for ErrorBuilder {
     }
 }
 
-impl ErrorBuilder {
+impl ErrorObjectBuilder {
     pub fn id<I: ToString>(self, id: I) -> Self {
         Self {
             id: Some(id.to_string()),
@@ -136,17 +136,17 @@ impl ErrorBuilder {
     }
 }
 
-impl From<Error> for ErrorBuilder {
-    fn from(error: Error) -> Self {
+impl From<ErrorObject> for ErrorObjectBuilder {
+    fn from(error_object: ErrorObject) -> Self {
         Self {
-            id: error.id,
-            links: error.links.map(|links| links.into()),
-            status: error.status,
-            code: error.code,
-            title: error.title,
-            detail: error.detail,
-            source: error.source.map(|source| source.into()),
-            meta: error.meta.map(|meta| meta.into()),
+            id: error_object.id,
+            links: error_object.links.map(|links| links.into()),
+            status: error_object.status,
+            code: error_object.code,
+            title: error_object.title,
+            detail: error_object.detail,
+            source: error_object.source.map(|source| source.into()),
+            meta: error_object.meta.map(|meta| meta.into()),
         }
     }
 }
@@ -159,8 +159,8 @@ mod tests {
     #[test]
     fn empty() {
         assert_eq!(
-            ErrorBuilder::default().unwrap(),
-            Error {
+            ErrorObjectBuilder::default().unwrap(),
+            ErrorObject {
                 id: None,
                 links: None,
                 status: None,
@@ -176,7 +176,7 @@ mod tests {
     #[test]
     fn full() {
         assert_eq!(
-            ErrorBuilder::default()
+            ErrorObjectBuilder::default()
                 .id("123")
                 .links(
                     LinksBuilder::default()
@@ -198,7 +198,7 @@ mod tests {
                         .item("bar", "qwe"),
                 )
                 .unwrap(),
-            Error {
+            ErrorObject {
                 id: Some("123".into()),
                 links: Some(fixtures::simple_links()),
                 status: Some(HttpStatus::OK),
@@ -217,7 +217,7 @@ mod tests {
     #[test]
     fn full_delegators() {
         assert_eq!(
-            ErrorBuilder::default()
+            ErrorObjectBuilder::default()
                 .id("123")
                 .link("self", LinkBuilder::new("http://self.com"))
                 .link("qwe", LinkBuilder::new("http://qwe.com"))
@@ -230,7 +230,7 @@ mod tests {
                 .meta1("foo", 123)
                 .meta1("bar", "qwe")
                 .unwrap(),
-            Error {
+            ErrorObject {
                 id: Some("123".into()),
                 links: Some(fixtures::simple_links()),
                 status: Some(HttpStatus::OK),

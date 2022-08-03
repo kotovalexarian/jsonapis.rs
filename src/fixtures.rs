@@ -1,5 +1,4 @@
 use super::*;
-use crate::entities::Error;
 
 use std::collections::HashMap;
 
@@ -114,8 +113,8 @@ pub fn simple_errors() -> Errors {
     vec![simple_error()]
 }
 
-pub fn simple_error() -> Error {
-    Error {
+pub fn simple_error() -> ErrorObject {
+    ErrorObject {
         id: Some("789".into()),
         links: None,
         status: None,
@@ -141,8 +140,8 @@ pub fn full_errors_value() -> Value {
     json!([full_error_value()])
 }
 
-pub fn full_error() -> Error {
-    Error {
+pub fn full_error() -> ErrorObject {
+    ErrorObject {
         id: Some("789".into()),
         links: Some(different_links()),
         status: Some(HttpStatus::OK),

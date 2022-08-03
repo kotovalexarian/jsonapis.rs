@@ -6,7 +6,7 @@ pub struct DocumentBuilder {
     meta: Option<MetaOrAttrsBuilder>,
     links: Option<LinksBuilder>,
     data: Option<DataBuilder>,
-    errors: Option<Vec<ErrorBuilder>>,
+    errors: Option<Vec<ErrorObjectBuilder>>,
 }
 
 impl Builder<'_> for DocumentBuilder {
@@ -18,8 +18,8 @@ impl Builder<'_> for DocumentBuilder {
             Some(errors) => {
                 let mut new_errors = Vec::new();
 
-                for error in errors {
-                    new_errors.push(error.finish()?);
+                for error_object in errors {
+                    new_errors.push(error_object.finish()?);
                 }
 
                 Some(new_errors)
@@ -77,11 +77,11 @@ impl DocumentBuilder {
         }
     }
 
-    pub fn errors<E: Into<ErrorBuilder>>(self, errors: Vec<E>) -> Self {
+    pub fn errors<E: Into<ErrorObjectBuilder>>(self, errors: Vec<E>) -> Self {
         let mut new_errors = Vec::new();
 
-        for error in errors {
-            new_errors.push(error.into());
+        for error_object in errors {
+            new_errors.push(error_object.into());
         }
 
         Self {
@@ -112,9 +112,9 @@ impl DocumentBuilder {
         }
     }
 
-    pub fn error<E: Into<ErrorBuilder>>(self, error: E) -> Self {
+    pub fn error<E: Into<ErrorObjectBuilder>>(self, error_object: E) -> Self {
         let mut errors = self.errors.unwrap_or_default();
-        errors.push(error.into());
+        errors.push(error_object.into());
 
         Self {
             errors: Some(errors),
@@ -130,8 +130,8 @@ impl From<Document> for DocumentBuilder {
             Some(errors) => {
                 let mut new_errors = Vec::new();
 
-                for error in errors {
-                    new_errors.push(error.into());
+                for error_object in errors {
+                    new_errors.push(error_object.into());
                 }
 
                 Some(new_errors)
@@ -183,7 +183,7 @@ mod tests {
                         .link("qwe", LinkBuilder::new("http://qwe.com")),
                 )
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
-                .errors(vec![ErrorBuilder::default().id("789")])
+                .errors(vec![ErrorObjectBuilder::default().id("789")])
                 .unwrap(),
             Document {
                 jsonapi: Some(JsonApi {
@@ -215,7 +215,7 @@ mod tests {
                 .link("self", LinkBuilder::new("http://self.com"))
                 .link("qwe", LinkBuilder::new("http://qwe.com"))
                 .data(DataBuilder::Single(ResourceBuilder::new("qwerties")))
-                .error(ErrorBuilder::default().id("789"))
+                .error(ErrorObjectBuilder::default().id("789"))
                 .unwrap(),
             Document {
                 jsonapi: Some(JsonApi {
@@ -408,7 +408,7 @@ mod tests {
     fn with_errors() {
         assert_eq!(
             DocumentBuilder::default()
-                .errors(vec![ErrorBuilder::default().id("789")])
+                .errors(vec![ErrorObjectBuilder::default().id("789")])
                 .unwrap(),
             Document {
                 jsonapi: None,

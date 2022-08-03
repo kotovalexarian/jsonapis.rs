@@ -1,6 +1,6 @@
 mod data;
 mod document;
-mod error;
+mod error_object;
 mod error_source;
 mod errors;
 mod http_status;
@@ -16,7 +16,7 @@ mod version;
 
 pub use data::Data;
 pub use document::Document;
-pub use error::Error;
+pub use error_object::ErrorObject;
 pub use error_source::ErrorSource;
 pub use errors::Errors;
 pub use http_status::HttpStatus;
