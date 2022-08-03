@@ -29,6 +29,12 @@ impl Display for Version {
     }
 }
 
+impl AsRef<str> for Version {
+    fn as_ref(&self) -> &str {
+        self.full.as_ref()
+    }
+}
+
 impl Default for Version {
     fn default() -> Self {
         Self {
@@ -103,6 +109,8 @@ impl<'de> Deserialize<'de> for Version {
 mod tests {
     use super::*;
 
+    use serde_json::json;
+
     #[test]
     fn clone() {
         assert_eq!(Version::default().clone(), Version::default());
@@ -127,6 +135,17 @@ mod tests {
     fn to_string() {
         assert_eq!(Version::default().to_string(), "1.0");
         assert_eq!(Version::new(123).to_string(), "1.123");
+    }
+
+    #[test]
+    fn as_ref_str() {
+        let version = Version::default();
+        let version_str: &str = version.as_ref();
+        assert_eq!(version_str, "1.0");
+
+        let version = Version::new(123);
+        let version_str: &str = version.as_ref();
+        assert_eq!(version_str, "1.123");
     }
 
     #[test]
@@ -199,5 +218,39 @@ mod tests {
 
         assert_eq!(version.full, "1.2");
         assert_eq!(version.minor, 2);
+    }
+
+    #[test]
+    fn serialize_and_deserialize() {
+        let version = Version::default();
+        let json = serde_json::to_string(&version).unwrap();
+        let deserialized: Version = serde_json::from_str(&json).unwrap();
+        assert_eq!(version, deserialized);
+    }
+
+    #[test]
+    fn serialize() {
+        let version = Version::default();
+        let json = serde_json::to_string(&version).unwrap();
+        let value: Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(value, json!("1.0"));
+
+        let version = Version::new(123);
+        let json = serde_json::to_string(&version).unwrap();
+        let value: Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(value, json!("1.123"));
+    }
+
+    #[test]
+    fn deserialize() {
+        let value = json!("1.0");
+        let json = serde_json::to_string(&value).unwrap();
+        let version: Version = serde_json::from_str(&json).unwrap();
+        assert_eq!(version, Version::default());
+
+        let value = json!("1.123");
+        let json = serde_json::to_string(&value).unwrap();
+        let version: Version = serde_json::from_str(&json).unwrap();
+        assert_eq!(version, Version::new(123));
     }
 }
